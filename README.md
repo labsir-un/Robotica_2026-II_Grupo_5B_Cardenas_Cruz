@@ -53,7 +53,7 @@ Aquí se documentan los laboratorios, avances, resultados y la presentación de 
 
 ### Integrante 1
 <div align="center">
-  <img src="./assets/integrantes/integrante1.jpg" alt="Foto Ariel Giovanni Cárdenas" width="180" height="180" style="border-radius: 50%; object-fit: cover;"><br><br>
+  <img src="./assets/integrantes/integrante1.png" alt="Foto Ariel Giovanni Cárdenas" width="180"><br><br>
 </div>
 
 - **Nombre completo:** Ariel Giovanni Cardenas Santisteban
