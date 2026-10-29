@@ -11,9 +11,8 @@
 
 <h2>Profesores: <br>Pedro Fabián Cárdenas Herrera <br> Manuel Felipe Carranza Montenegro</h2>
 
-<h4>Nombre Integrante 1<br>
-    Nombre Integrante 2<br>
-    Nombre Integrante 3</h4>
+<h4>Ariel Giovanni Cardenas Santisteban<br>
+    Kennet Jared Cruz Machuc</h4>
 
 <p>
   <img alt="Ubuntu 24.04 LTS" src="https://img.shields.io/badge/Ubuntu-24.04%20LTS-E95420?logo=ubuntu&logoColor=white">
@@ -54,23 +53,23 @@ Aquí se documentan los laboratorios, avances, resultados y la presentación de 
 
 ### Integrante 1
 <div align="center">
-  <img src="./assets/integrantes/integrante1.jpg" alt="Foto integrante 1" style="border-radius: 50%; width: 180px;"><br>
+  <img src="./assets/integrantes/integrante1.jpg" alt="Foto Ariel Giovanni Cárdenas" width="180" height="180" style="border-radius: 50%; object-fit: cover;"><br><br>
 </div>
 
-- **Nombre completo:** Nombre Apellido
+- **Nombre completo:** Ariel Giovanni Cardenas Santisteban
 - **Carrera:** Ingeniería Mecatrónica
-- **Correo institucional:** nombre@unal.edu.co
-- **Usuario de GitHub:** [usuariogithub](https://github.com/usuariogithub)
-- **Rol en el equipo:** Ej. Integración ROS 2, documentación, simulación
-- **Intereses:** Robótica móvil, visión artificial, automatización
+- **Correo institucional:** arcardenass@unal.edu.co
+- **Usuario de GitHub:** [ArielDcg](https://github.com/ArielDcg)
+- **Rol en el equipo:** Documentación, Programación, Control
+- **Intereses:** Automatización de Procesos, Robótica Industrial, Teoría de Control
 - **Descripción breve:**  
-  Escribe aquí una breve presentación personal y académica del integrante.
+Soy estudiante de Ingeniería Mecatrónica orientándome hacia la maestría en Automatización Industrial para solucionar problemas reales en el sector cafetero. Mi objetivo es aportar a la renovación tecnológica agrícola de Ecuador, mi país natal, y de Colombia, país al que agradezco mi crecimiento académico. Busco automatizar líneas de transformación para exportación masiva, impulsado por mi interés en la investigación en robótica y el desarrollo de la teoría de control.
 
 ---
 
 ### Integrante 2
 <div align="center">
-  <img src="./assets/integrantes/integrante2.jpg" alt="Foto integrante 2" style="border-radius: 50%; width: 180px;"><br>
+  <img src="./assets/integrantes/integrante2.jpg" alt="Foto integrante 2" width="180" height="180" style="border-radius: 50%; object-fit: cover;"><br><br>
 </div>
 
 - **Nombre completo:** Nombre Apellido
@@ -81,20 +80,3 @@ Aquí se documentan los laboratorios, avances, resultados y la presentación de 
 - **Intereses:** Manipulación, ROS 2, control de robots
 - **Descripción breve:**  
   Escribe aquí una breve presentación personal y académica del integrante.
-
----
-
-### Integrante 3
-<div align="center">
-  <img src="./assets/integrantes/integrante3.jpg" alt="Foto integrante 3" style="border-radius: 50%; width: 180px;"><br>
-</div>
-
-- **Nombre completo:** Nombre Apellido
-- **Carrera:** Ingeniería Mecatrónica
-- **Correo institucional:** nombre@unal.edu.co
-- **Usuario de GitHub:** [usuariogithub](https://github.com/usuariogithub)
-- **Rol en el equipo:** Ej. Documentación, pruebas, simulación
-- **Intereses:** Robótica industrial, sistemas autónomos, IA
-- **Descripción breve:**  
-  Escribe aquí una breve presentación personal y académica del integrante.
-
