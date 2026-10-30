@@ -64,7 +64,7 @@ Laboratorio No. 01 - Robótica Industrial ABB IRB140 y RobotStudio/
 ├── README.MD               # Documentación principal de la práctica
 ├── CAD/                    # Modelos geométricos de la herramienta (formato .SAT)
 ├── RAPID/                  # Código fuente del programa (.mod y .txt)
-└── Resultados/             # Fotografías y evidencias de la celda
+└── Resultados/             # Fotografías, capturas y evidencias de la celda y simulación
 ```
 
 ---
