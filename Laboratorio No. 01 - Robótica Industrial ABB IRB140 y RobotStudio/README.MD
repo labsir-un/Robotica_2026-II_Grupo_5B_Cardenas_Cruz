@@ -93,29 +93,52 @@ Para ejecutar el trazado sobre la pizarra redonda sin dañar el marcador ni comp
 
 ## 5. Calibración de TCP, WorkObjects y trayectorias
 
-### 5.1 Tool Center Point (TCP)
-La calibración física del TCP se llevó a cabo en el laboratorio mediante el FlexPendant utilizando el método de aproximación por 4 puntos a una referencia fija cónica. En RobotStudio, el TCP virtual se obtuvo a partir de las coordenadas del modelo CAD acoplado al flange.
+### 5.1 Tool Center Point (TCP): Calibración y comparación real vs. virtual
 
-A continuación se presentan los valores nominales registrados en el módulo RAPID (`MyNewTool`):
+La calibración física del efector final se realizó en la celda mediante el Teach Pendant del IRC5 empleando el método de aproximación por 4 puntos a una referencia cónica fija (módulo `TCP_aaa`). En RobotStudio, el TCP virtual se obtuvo directamente a partir de las coordenadas del modelo CAD acoplado al flange del manipulador (`MyNewTool`).
 
-| Parámetro TCP | Valor obtenido (`tooldata MyNewTool`) |
-|---|---|
-| **Posición X [mm]** | `8.526` |
-| **Posición Y [mm]** | `1.820` |
-| **Posición Z [mm]** | `195.145` |
-| **Orientación Cuaternión `[q1, q2, q3, q4]`** | `[0.965926, 0.0, 0.258819, 0.0]` |
-| **Masa nominal [kg]** | `1.0` |
+**Poses de referencia registradas en el robot real:**
+- `pTCP_Point1`: `[487.088, -198.331, 348.189] mm`
+- `pTCP_Point2`: `[474.836, -270.364, 329.537] mm`
+- `pTCP_Point3`: `[669.161, -210.049, 389.863] mm`
+- `pTCP_Point4`: `[621.806, -39.513, 295.814] mm`
 
-### 5.2 WorkObjects (Superficies de trabajo)
-Para desacoplar las trayectorias de la base del robot y permitir traslados geométricos entre la simulación y la estación real, se definieron dos WorkObjects (`wobjdata`):
+**Comparativa dimensional entre el TCP real y el TCP virtual:**
 
-- **`Workobject_1` (Abstracción física del pastel y la base):** Modela la disposición geométrica de la estación de trabajo. Físicamente consistió en una caja de zapatos sobre la cual reposaba la pizarra circular. En RobotStudio se modeló como un cilindro con el radio exacto de la pizarra, despreciando los bordes sobresalientes de la caja para centrar el espacio útil de dibujo.
-- **`Cara` (Marco del trazado CAD):** Sistema de coordenadas vinculado directamente al sólido CAD importado con la geometría del rostro de Naruto. Sobre este mismo objeto de trabajo se asociaron y generaron las trayectorias de los nombres perimetrales (**Ariel** y **Jared**).
+| Parámetro | Real (`tooldata aaa`) | Virtual (`tooldata MyNewTool`) | Desviación (Virtual − Real) |
+|---|:---:|:---:|:---:|
+| **Posición X [mm]** | `8.321` | `8.526` | `+0.205` |
+| **Posición Y [mm]** | `5.401` | `1.820` | `-3.581` |
+| **Posición Z [mm]** | `200.110` | `195.145` | `-4.965` |
+| **Distancia entre TCPs [mm]** | — | — | **`6.125`** |
+| **Orientación Cuaternión `[q1, q2, q3, q4]`** | `[1.0, 0.0, 0.0, 0.0]` | `[0.965926, 0.0, 0.258819, 0.0]` | Rotación de 30° en Y |
+| **Masa nominal [kg]** | `1.0` | `1.0` | `0.0` |
 
-| WorkObject | Coordenadas origen `[X, Y, Z]` (mm) | Rotación Cuaternión `[q1, q2, q3, q4]` | Función |
-|---|---|---|---|
-| **`Cara`** | `[540.229, 0.016, 186.500]` | `[0.0, 0.707107, 0.707107, 0.0]` | Marco de referencia principal centrado sobre el pastel para el rostro de Naruto y los nombres |
-| **`Workobject_1`** | `[472.139, 2.804, 186.500]` | `[0.0, 0.573618, 0.819123, 0.0]` | Abstracción cilíndrica de la base y pizarra para referencia de la estación |
+**Análisis de discrepancias del TCP:**
+- **Precisión dimensional:** La diferencia entre ambos puntos de referencia es de **`6.125 mm`**, concentrándose la mayor variación en los ejes Y (`-3.58 mm`) y Z (`-4.96 mm`). Esta diferencia se atribuye a dos factores principales: en primer lugar, a la apreciación visual durante la alineación manual a la punta en los 4 puntos de aproximación en el laboratorio, y en segundo lugar, a las tolerancias dimensionales del soporte impreso en 3D y el ajuste mecánico del marcador (El porta marcador contaba con cierta capacidad de retracción debido a su resorte interno, lo que dificultaba la obtención de un punto de contacto preciso y repetible).
+
+---
+
+### 5.2 WorkObjects: Definición y comparación real vs. virtual
+
+En la celda real se calibró un único plano de trabajo correspondiente a la superficie donde reposaba la pizarra sobre la caja de zapatos (`Wobj_aaaa`), empleando el método de 3 puntos en el FlexPendant (`X1 = [698.54, 109.29, 191.90] mm`, `X2 = [523.93, 116.94, 181.87] mm` y `Y1 = [690.99, -120.22, 187.64] mm`).
+
+En RobotStudio se utilizaron dos WorkObjects virtuales:
+- **`Workobject_1` (Superficie física de trabajo):** Modela la estación de trabajo simulando un cilindro con el radio de la pizarra redonda montado sobre la caja. Es la contraparte virtual directa de la calibración física.
+- **`Cara` (Marco del dibujo):** No se calibró de forma independiente en el robot real; se definió en RobotStudio centrado sobre el pastel para albergar la geometría importada de Naruto y asociar las trayectorias de los nombres (**Ariel** y **Jared**).
+
+| WorkObject | Origen `[X, Y, Z]` (mm) | Cuaternión `[q1, q2, q3, q4]` | Tipo / Entorno | Función principal |
+|---|:---:|:---:|:---:|---|
+| **Real (`Wobj_aaaa`)** | `[700.78, 109.19, 192.03]` | `[0.02, -0.03, -0.01, 1.00]` | Físico (Robot real) | Plano medido en la celda sobre la caja y pizarra |
+| **`Workobject_1`** | `[472.14, 2.80, 186.50]` | `[0.0, 0.57, 0.82, 0.0]` | Virtual (RobotStudio) | Abstracción cilíndrica de la base y pizarra |
+| **`Cara`** | `[540.23, 0.02, 186.50]` | `[0.0, 0.71, 0.71, 0.0]` | Virtual (RobotStudio) | Marco centrado para el trazado de Naruto y los nombres |
+
+**Comparación entre lo real y lo virtual:**
+- **Altura de la superficie:** La altura medida en el robot real fue de `192.0 mm` y en el modelo virtual de `186.5 mm`. La diferencia es de solo **`5.5 mm`**, lo que muestra que el plano virtual y el montaje físico de la caja con la pizarra sobre la banda estaban prácticamente a la misma altura.
+- **Orientación del eje Z:** En la calibración física, el eje Z queda apuntando hacia arriba (saliendo de la superficie), mientras que en RobotStudio se orientó hacia abajo (apuntando hacia la mesa) para alinearlo con la aproximación del marcador. Por eso los marcos presentan un giro de casi 180° entre sí.
+- **Posición del origen:** En el laboratorio los 3 puntos se tomaron en los bordes accesibles de la superficie, mientras que en RobotStudio el origen se ubicó en el centro del pastel para facilitar el diseño y centrado del dibujo.
+
+
 
 ### 5.3 Metodología de generación y ajuste de trayectorias (CAD a RobotStudio y cinemática)
 
@@ -211,10 +234,10 @@ El programa RAPID ([`Module1.mod`](./RAPID/Module1.mod)) se estructuró de maner
 ```mermaid
 flowchart TD
     Start(["Inicio: main()"]) --> Init["Resetear señales (DO_01, DO_02, DO_03, FWD, BWD)<br>Ejecutar Path_Home"]
-    Init --> Loop{"Bucle de sondeo continuo<br>WHILE TRUE"}
+    Init --> Loop{"Bucle<br>WHILE TRUE"}
 
     %% DI_01 Branch
-    Loop --> CheckDI01{"Pulso DI_01 == 1 ?<br>(Ciclo Decoracion)"}
+    Loop --> CheckDI01{"DI_01 == 1 ?<br>(Ciclo Decoracion)"}
     CheckDI01 -- "Sí" --> DO01_On["Activar DO_01 = 1"]
     DO01_On --> FWD_In["Activar FWD_Conveyor<br>WaitTime 4.3 s (TiempoEntrada)<br>Detener FWD_Conveyor"]
     FWD_In --> ExecDecor["Ejecutar RutinaDecoracion:<br>1. Contornos y Rostro Naruto<br>2. Nombre ARIEL<br>3. Nombre JARED<br>4. Relleno y Path_Home"]
@@ -223,16 +246,16 @@ flowchart TD
     DO01_Off --> Loop
 
     %% DI_02 Branch
-    CheckDI01 -- "No" --> CheckDI02{"Pulso DI_02 == 1 ?<br>(Mantenimiento)"}
+    CheckDI01 -- "No" --> CheckDI02{"DI_02 == 1 ?<br>(Mantenimiento)"}
     CheckDI02 -- "Sí" --> DO02_On["Activar DO_02 = 1<br>Ejecutar Path_Home"]
     DO02_On --> HoldMant{"Bucle de retención:<br>WHILE DI_02 == 0"}
     HoldMant -- "Pulsador no oprimido (0)" --> MantPose["Ejecutar ModoMantenimiento:<br>MoveAbsJ PoseMant"]
     MantPose --> HoldMant
-    HoldMant -- "2do pulso DI_02 == 1" --> HomeMant["Ejecutar Path_Home<br>Desactivar DO_02 = 0"]
+    HoldMant -- "2do DI_02 == 1" --> HomeMant["Ejecutar Path_Home<br>Desactivar DO_02 = 0"]
     HomeMant --> Loop
 
     %% DI_03 Branch
-    CheckDI02 -- "No" --> CheckDI03{"Pulso DI_03 == 1 ?<br>(Farmear Aura)"}
+    CheckDI02 -- "No" --> CheckDI03{"DI_03 == 1 ?<br>(Farmear Aura)"}
     CheckDI03 -- "Sí" --> DO03_On["Activar DO_03 = 1<br>Ejecutar Path_Home"]
     DO03_On --> AuraStart["MoveAbsJ Pose_Aura1"]
     AuraStart --> AuraLoop["Bucle: FOR i = 1 TO 3<br>Pose_Aura2 <--> Pose_Aura3"]
