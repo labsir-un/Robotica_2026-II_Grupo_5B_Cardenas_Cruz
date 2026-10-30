@@ -22,7 +22,7 @@
 2. [Objetivos alcanzados](#2-objetivos-alcanzados)
 3. [Estructura del directorio](#3-estructura-del-directorio)
 4. [Diseño del portamarcador](#4-diseño-del-portamarcador)
-5. [Calibración de TCP y WorkObject](#5-calibración-de-tcp-y-workobject)
+5. [Calibración de TCP, WorkObjects y trayectorias](#5-calibración-de-tcp-workobjects-y-trayectorias)
 6. [Lógica de control y programa RAPID](#6-lógica-de-control-y-programa-rapid)
 7. [Resultados y video demostrativo](#7-resultados-y-video-demostrativo)
 8. [Aprendizajes y dificultades](#8-aprendizajes-y-dificultades)
@@ -32,7 +32,7 @@
 
 ## 1. Descripción de la solución
 
-En esta práctica se automatizó la rutina de decoración de un pastel (representado físicamente mediante una superficie de pizarra redonda en la celda robótica), utilizando el manipulador industrial **ABB IRB 140** controlado por la unidad **IRC5** y sincronizado con una **banda transportadora**.
+En esta práctica se automatizó la rutina de decoración de un pastel (representado físicamente mediante una superficie de pizarra redonda en la celda robótica), utilizando el manipulador industrial **ABB IRB 140** (denominado **Abel** en la celda del laboratorio) controlado por la unidad **IRC5** y sincronizado con una **banda transportadora** gobernada externamente por un variador de frecuencia.
 
 La tarea de decoración se diseñó de forma conjunta por el equipo y comprende:
 - **Trazado perimetral:** Escritura continua de los nombres de los integrantes (**Ariel** y **Jared**) distribuidos a lo largo del borde circular de la pizarra.
@@ -40,7 +40,7 @@ La tarea de decoración se diseñó de forma conjunta por el equipo y comprende:
 - **Modos de operación:** Implementación de tres rutinas independientes seleccionadas mediante las entradas digitales del módulo DSQC 652:
   1. **`DI_01` — Ciclo automático de decoración:** Ingreso del pastel sobre la banda transportadora, detención en la estación de trabajo, ejecución de las trayectorias de dibujo por parte del robot y evacuación del producto terminado hacia el final de la banda.
   2. **`DI_02` — Pose de mantenimiento:** Desplazamiento seguro del robot a una posición accesible para inspección, ajuste o cambio del marcador.
-  3. **`DI_03` — Rutina *Farmear Aura*:** Mvimiento libre desarrollada por el equipo como componente creativo y de verificación cinemática.
+  3. **`DI_03` — Rutina *Farmear Aura*:** Movimiento libre desarrollada por el equipo como componente creativo y de verificación cinemática.
 
 ---
 
@@ -91,7 +91,7 @@ Para ejecutar el trazado sobre la pizarra redonda sin dañar el marcador ni comp
 
 ---
 
-## 5. Calibración de TCP y WorkObject
+## 5. Calibración de TCP, WorkObjects y trayectorias
 
 ### 5.1 Tool Center Point (TCP)
 La calibración física del TCP se llevó a cabo en el laboratorio mediante el FlexPendant utilizando el método de aproximación por 4 puntos a una referencia fija cónica. En RobotStudio, el TCP virtual se obtuvo a partir de las coordenadas del modelo CAD acoplado al flange.
@@ -107,81 +107,140 @@ A continuación se presentan los valores nominales registrados en el módulo RAP
 | **Masa nominal [kg]** | `1.0` |
 
 ### 5.2 WorkObjects (Superficies de trabajo)
-Se calibraron y utilizaron dos objetos de trabajo (`wobjdata`) para desacoplar las trayectorias geométricas del marco de referencia de la base del robot:
+Para desacoplar las trayectorias de la base del robot y permitir traslados geométricos entre la simulación y la estación real, se definieron dos WorkObjects (`wobjdata`):
+
+- **`Workobject_1` (Abstracción física del pastel y la base):** Modela la disposición geométrica de la estación de trabajo. Físicamente consistió en una caja de zapatos sobre la cual reposaba la pizarra circular. En RobotStudio se modeló como un cilindro con el radio exacto de la pizarra, despreciando los bordes sobresalientes de la caja para centrar el espacio útil de dibujo.
+- **`Cara` (Marco del trazado CAD):** Sistema de coordenadas vinculado directamente al sólido CAD importado con la geometría del rostro de Naruto. Sobre este mismo objeto de trabajo se asociaron y generaron las trayectorias de los nombres perimetrales (**Ariel** y **Jared**).
 
 | WorkObject | Coordenadas origen `[X, Y, Z]` (mm) | Rotación Cuaternión `[q1, q2, q3, q4]` | Función |
 |---|---|---|---|
 | **`Cara`** | `[540.229, 0.016, 186.500]` | `[0.0, 0.707107, 0.707107, 0.0]` | Marco de referencia principal centrado sobre el pastel para el rostro de Naruto y los nombres |
-| **`Workobject_1`** | `[472.139, 2.804, 186.500]` | `[0.0, 0.573618, 0.819123, 0.0]` | Marco alterno para reubicación y pruebas de traslación |
+| **`Workobject_1`** | `[472.139, 2.804, 186.500]` | `[0.0, 0.573618, 0.819123, 0.0]` | Abstracción cilíndrica de la base y pizarra para referencia de la estación |
+
+### 5.3 Metodología de generación y ajuste de trayectorias (CAD a RobotStudio y cinemática)
+
+Para lograr el trazado preciso del rostro de Naruto y los nombres sin incurrir en colisiones o singularidades, se implementó el siguiente flujo de trabajo:
+
+1. **Selección y preparación gráfica:** Se seleccionó una imagen del rostro de Naruto desde internet. Se incrementó la saturación y el contraste para destacar los trazos de color negro y se procedió a la vectorización de los bordes.
+2. **Modelado CAD (Autodesk Fusion 360):** El archivo vectorial se importó en Fusion 360, donde se escaló a las proporciones de la pizarra circular, se centró respecto al origen y se generó un sólido extruido de pocos milímetros de espesor. Con la misma metodología se modelaron las letras para los nombres de los integrantes (**ARIEL** y **JARED**).
+3. **Exportación e importación en RobotStudio:** Los sólidos se exportaron en formato `.SAT`. Al importarse en RobotStudio, las piezas conservaban el sistema de referencia por defecto proveniente del entorno CAD; este marco fue trasladado geométricamente para posicionar y alinear de forma inmediata los sólidos sobre el WorkObject correspondiente (`Cara`).
+4. **Definición de trayectorias con Auto-Path:** Se seleccionaron los contornos cerrados del sólido; la herramienta *Auto-Path* de RobotStudio calculó los puntos de paso (`targets`) y los enlazó automáticamente en trayectorias continuas.
+5. **Corrección de alcanzabilidad cinemática (*Target Unreachable*):**
+   - *Problema de orientación de los marcos de referencia:* Por defecto, *Auto-Path* asignaba orientaciones arbitrarias y dispares a los ejes de referencia a lo largo de las curvas, ocasionando errores donde el robot no podía alcanzar los puntos debido a límites articulares del manipulador.
+   - *Solución (Homogeneización de marcos):* Se configuró un marco de referencia con una orientación similar a la de la herramienta (`MyNewTool`) en posición de trabajo, y se replicó dicha orientación homogéneamente a todos los puntos de la trayectoria.
+   - *Problema en puntos críticos cercanos a la base:* En las curvas más próximas a la base del manipulador (como el contorno de la barbilla de Naruto), persistían errores de alcanzabilidad cinemática.
+   - *Solución (Rotación angular en el eje Y):* Se rotaron los marcos de referencia de dichos puntos críticos alrededor de su eje local **Y** entre **5° y 15°** (aplicando 15° a los puntos más cercanos al robot). Esta ligera inclinación facilitó la aproximación cinemática del brazo sin perder el contacto del marcador sobre la pizarra.
 
 ---
 
 ## 6. Lógica de control y programa RAPID
 
-### 6.1 Mapeo de Entradas y Salidas Digitales (Módulo DSQC 652)
+### 6.1 Mapeo y comportamiento de Entradas y Salidas Digitales (Módulo DSQC 652)
 
-| Señal | Tipo | Descripción |
-|---|---|---|
-| `DI_01` | Entrada Digital | Inicia el ciclo automático de transporte y decoración |
-| `DI_02` | Entrada Digital | Solicita el desplazamiento a pose de mantenimiento |
-| `DI_03` | Entrada Digital | Inicia la rutina coreográfica *Farmear Aura* |
-| `DO_01` | Salida Digital | Activa (1) mientras el robot ejecuta la rutina de decoración |
-| `DO_02` | Salida Digital | Activa (1) mientras el robot permanece en pose de mantenimiento |
-| `DO_03` | Salida Digital | Activa (1) durante la ejecución de la rutina *Farmear Aura* |
-| `FWD_Conveyor` | Salida Digital | Activa el avance de la banda transportadora hacia la estación |
-| `BWD_Conveyor` | Salida Digital | Activa el retroceso de la banda transportadora hacia la salida |
+Las señales de entrada y salida fueron configuradas a través del módulo de E/S estándar **DSQC 652** en el controlador IRC5:
 
-> [!WARNING]
-> **Enclavamiento de seguridad:** Para proteger el motor y el variador de frecuencia, el programa prohíbe y previene en todo momento la activación simultánea de `FWD_Conveyor = 1` y `BWD_Conveyor = 1`.
+> [!NOTE]
+> **Naturaleza física de las entradas:** Las entradas `DI_01`, `DI_02` y `DI_03` están conectadas a **pulsadores físicos** (contactos normalmente abiertos). Al ser accionadas, entregan un pulso transitorio (1 lógico mientras están presionadas, 0 al soltarse), lo cual determinó el diseño lógico en RAPID para enclavamiento y retención.
+
+| Señal | Tipo | Elemento físico / Función | Comportamiento lógico en RAPID |
+|---|---|---|---|
+| `DI_01` | Entrada Digital | Pulsador verde / Marcha ciclo | Inicia el ciclo automático de transporte, dibujo y evacuación |
+| `DI_02` | Entrada Digital | Pulsador / Mantenimiento (Toggle) | Primer pulso: entra y retiene pose `PoseMant`. Segundo pulso: sale y retorna a Home |
+| `DI_03` | Entrada Digital | Pulsador / Rutina libre | Inicia la coreografía articular *Farmear Aura* |
+| `DO_01` | Salida Digital | Luz piloto / Indicador Decoración | Activa (`1`) durante todo el ciclo de decoración y movimiento de entrada/salida de la banda |
+| `DO_02` | Salida Digital | Luz piloto / Indicador Mantenimiento | Activa (`1`) mientras el robot se mantenga retenido en la pose de mantenimiento |
+| `DO_03` | Salida Digital | Luz piloto / Indicador Farmear Aura | Activa (`1`) durante la ejecución de la coreografía *Farmear Aura* |
+| `FWD_Conveyor` | Salida Digital | Relé mando / Avance banda | Comanda el avance de la banda transportadora hacia el robot |
+| `BWD_Conveyor` | Salida Digital | Relé mando / Reversa banda | Comanda el retroceso de la banda transportadora (utilizado en `RutinaVuelta`) |
+
+> [!NOTE]
+> **Accionamiento de la banda y particularidades de las celdas ("Abel" vs. "Caín"):**
+> Las bandas transportadoras de la celda son sistemas periféricos totalmente **independientes del manipulador**; no están acopladas cinemáticamente al IRC5 ni constituyen un grado de libertad adicional del robot, sino que se controlan mediante un **variador de frecuencia externo** comandado a través de las salidas digitales del módulo DSQC 652.
+>
+> Debido a que las celdas del laboratorio se implementaron en distintos momentos y con recursos diferentes, presentan filosofías de control distintas:
+> - **Celda "Caín":** La señal `FWD` se utiliza como habilitador general de marcha (`Run/Stop`) y la segunda señal conmuta el sentido de giro (`Dirección`).
+> - **Celda "Abel" (utilizada en esta práctica):** Maneja señales independientes de marcha para avance (`FWD_Conveyor`) y reversa (`BWD_Conveyor`). En esta celda, el variador y el controlador real ya incorporaban un enclavamiento por hardware por defecto que impedía la activación simultánea de ambos sentidos.
+>
+> **Enclavamiento redundante por software en RAPID:** A pesar de que en "Abel" el hardware ya protegía la inversión de marcha de forma predeterminada, se mantuvo la lógica de enclavamiento explícito en el código RAPID (asegurando el apagado preventivo de una señal antes de activar la opuesta). Esta redundancia garantiza buenas prácticas de programación industrial, inmunidad ante fallas de configuración del variador y portabilidad del código entre celdas.
+
+#### Detalle de operación por modos:
+
+- **Modo 1: Ciclo de Decoración (`DI_01` / `DO_01`):**
+  Al pulsar `DI_01`:
+  1. Se enciende el indicador visual `DO_01 = 1`.
+  2. Se activa el avance de la banda `FWD_Conveyor = 1` durante `TiempoEntrada = 4.3 s` para ingresar el pastel hasta la posición de trabajo, tras lo cual se detiene (`RESET FWD_Conveyor`).
+  3. Se ejecuta `RutinaDecoracion()`, que traza ordenadamente el contorno del rostro, cabello, facciones, banda ninja, los nombres **ARIEL** y **JARED**, y el sombreado final. Entre secciones, la herramienta sube a `Target_Pausa` (`Z = -35.3 mm`) mediante `Path_Pausa()` para evitar rayaduras accidentales.
+  4. Se reactiva `FWD_Conveyor = 1` durante `TiempoSalida = 4.3 s` para evacuar el pastel terminado hacia el extremo de descarga.
+  5. Se apaga el indicador `DO_01 = 0`.
+
+- **Modo 2: Pose de Mantenimiento (`DI_02` / `DO_02`):**
+  Al ser `DI_02` un pulsador momentáneo, se implementó una rutina de retención lógica:
+  1. Al presionar `DI_02` por primera vez (`DI_02 = 1`), se activa `DO_02 = 1` y el robot va a `Path_Home`.
+  2. Al liberarse el pulsador, `DI_02` vuelve a `0`, entrando al ciclo:
+     ```rapid
+     WHILE DI_02 = 0 DO
+         ModoMantenimiento;
+     ENDWHILE
+     ```
+     En este estado, el manipulador ejecuta continuamente `MoveAbsJ PoseMant, v200, fine, MyNewTool`, permaneciendo inmóvil en la pose articular accesible `PoseMant` (`[-30°, -10°, 10°, 0°, 30°, 0°]`) para inspección o cambio de marcador.
+  3. Cuando el operador presiona el pulsador `DI_02` por segunda vez (`DI_02 = 1`), la condición `DI_02 = 0` se rompe, el robot sale del bucle, ejecuta `Path_Home` y apaga el testigo `DO_02 = 0`.
+
+- **Modo 3: Coreografía *Farmear Aura* (`DI_03` / `DO_03`):**
+  1. Al recibir el pulso en `DI_03`, se resetean las demás salidas y se enciende `DO_03 = 1`.
+  2. El robot ejecuta `FarmearAura`: realiza una transición hacia `Pose_Aura1`, ejecuta un ciclo iterativo `FOR i FROM 1 TO 3 DO` oscilando entre `Pose_Aura2` y `Pose_Aura3`, se desplaza a `Pose_Aura4`, retorna a `Path_Home` y apaga `DO_03 = 0`.
+  3. El procedimiento finaliza con una instrucción de espera `WHILE DI_03 = 1 DO WaitTime 0.1; ENDWHILE`, asegurando que si el usuario mantiene el pulsador presionado, no se reinicie la rutina hasta que este sea liberado.
 
 ### 6.2 Arquitectura modular del programa
 
-El código RAPID está estructurado en procedimientos especializados:
+El programa RAPID ([`Module1.mod`](./RAPID/Module1.mod)) se estructuró de manera modular para facilitar su mantenimiento y depuración:
 
-- **`main()`**: Ciclo principal de supervisión que inicializa las señales en cero (`Reset`), posiciona el robot en `Path_Home` y ejecuta un bucle continuo (`WHILE TRUE`) evaluando los modos de operación.
-- **`RutinaDecoracion()`**: Coordina el trazado secuencial de contornos y detalles. Entre cada sección se llama a `Path_Pausa()` para elevar la herramienta hacia `Target_Pausa` (`Z = -35.3 mm`), evitando rayones indeseados:
-  - *Rostro de Naruto:* `Path_ContornoExterno`, `Cabello`, `ContornoCara`, `Frente`, `Boca`, `BandaNinja`, `SimboloNinja`, orejas (1 y 2 para derecha e izquierda) y detalles (1 al 7).
-  - *Nombres:*
-    - **Ariel:** `Path_Nombre1_A1`, `A2`, `R1`, `R2`, `I`, `E`, `L`.
-    - **Jared:** `Path_Nombre2_J`, `A1`, `A2`, `R1`, `R2`, `E`, `D1`, `D2`.
+- **`main()`**: Módulo principal de supervisión que inicializa las salidas a cero (`Reset`), envía el robot a `Path_Home` y gestiona el bucle infinito `WHILE TRUE DO` para el sondeo de los pulsadores de entrada.
+- **`RutinaDecoracion()`**: Secuencia lineal de 35 trayectorias de dibujo con interpolación lineal (`MoveL`) y articular (`MoveJ`). Aplica elevación intermedia con `Path_Pausa()` a `Target_Pausa` entre cada trazo:
+  - *Rostro de Naruto:* `Path_ContornoExterno`, `Cabello`, `ContornoCara`, `Frente`, `Boca`, `BandaNinja`, `SimboloNinja`, orejas (1 y 2 para derecha e izquierda) y detalles 1 al 7.
+  - *Nombre Ariel:* `Path_Nombre1_A1`, `A2`, `R1`, `R2`, `I`, `E`, `L`.
+  - *Nombre Jared:* `Path_Nombre2_J`, `A1`, `A2`, `R1`, `R2`, `E`, `D1`, `D2`.
   - *Pintado final:* `Path_Pintar1`, `Path_Pintar2`.
-- **`ModoMantenimiento()`**: Desplaza el robot mediante `MoveAbsJ` a `PoseMant` (`[-30°, -10°, 10°, 0°, 30°, 0°]`).
-- **`FarmearAura()`**: Coreografía con bucle iterativo `FOR i FROM 1 TO 3` alternando entre `Pose_Aura2` y `Pose_Aura3`, con entrada y salida hacia `Pose_Aura1` y `Pose_Aura4`.
-- **`ConveyorForward()`, `ConveyorBackward()`, `ConveyorStop()`**: Control del avance y reversa con tiempos de temporización calibrados (`TiempoEntrada = 4.3 s`, `TiempoSalida = 4.3 s`).
+- **`ModoMantenimiento()`**: Desplazamiento articular absoluto (`MoveAbsJ`) hacia `PoseMant`.
+- **`FarmearAura()`**: Rutina coreográfica creativa con 3 oscilaciones articulares completas a velocidad `v150` con zona `z1`.
+- **`RutinaVuelta()`**: Rutina de retorno en reversa de la banda transportadora con `BWD_Conveyor` durante `4.3 s`.
+- **`ConveyorForward()`, `ConveyorBackward()`, `ConveyorStop()`**: Módulos auxiliares de control de transporte con temporización calibrada (`TiempoEntrada = 4.3 s`, `TiempoSalida = 4.3 s`, `TiempoDeslizamiento = 3.8 s`).
+- **`Path_Home()`**: Posición de reposo seguro para evitar colisiones con elementos del entorno.
 
 ### 6.3 Diagrama de flujo del sistema
 
 ```mermaid
 flowchart TD
     Start(["Inicio: main()"]) --> Init["Resetear señales (DO_01, DO_02, DO_03, FWD, BWD)<br>Ejecutar Path_Home"]
-    Init --> Loop{"Bucle continuo: WHILE TRUE"}
+    Init --> Loop{"Bucle de sondeo continuo<br>WHILE TRUE"}
 
     %% DI_01 Branch
-    Loop --> CheckDI01{"DI_01 == 1 ?<br>(Ciclo Decoracion)"}
+    Loop --> CheckDI01{"Pulso DI_01 == 1 ?<br>(Ciclo Decoracion)"}
     CheckDI01 -- "Sí" --> DO01_On["Activar DO_01 = 1"]
-    DO01_On --> FWD_In["Activar FWD_Conveyor<br>WaitTime 4.3 s<br>Detener FWD_Conveyor"]
-    FWD_In --> ExecDecor["Ejecutar RutinaDecoracion:<br>1. Contornos y Rostro Naruto<br>2. Nombre ARIEL<br>3. Nombre JARED<br>4. Pintado y retorno Home"]
-    ExecDecor --> FWD_Out["Activar FWD_Conveyor<br>WaitTime 4.3 s<br>Detener FWD_Conveyor"]
+    DO01_On --> FWD_In["Activar FWD_Conveyor<br>WaitTime 4.3 s (TiempoEntrada)<br>Detener FWD_Conveyor"]
+    FWD_In --> ExecDecor["Ejecutar RutinaDecoracion:<br>1. Contornos y Rostro Naruto<br>2. Nombre ARIEL<br>3. Nombre JARED<br>4. Relleno y Path_Home"]
+    ExecDecor --> FWD_Out["Activar FWD_Conveyor<br>WaitTime 4.3 s (TiempoSalida)<br>Detener FWD_Conveyor"]
     FWD_Out --> DO01_Off["Desactivar DO_01 = 0"]
     DO01_Off --> Loop
 
     %% DI_02 Branch
-    CheckDI01 -- "No" --> CheckDI02{"DI_02 == 1 ?<br>(Mantenimiento)"}
+    CheckDI01 -- "No" --> CheckDI02{"Pulso DI_02 == 1 ?<br>(Mantenimiento)"}
     CheckDI02 -- "Sí" --> DO02_On["Activar DO_02 = 1<br>Ejecutar Path_Home"]
-    DO02_On --> HoldMant{"Bucle: WHILE DI_02 == 0"}
-    HoldMant -- "Esperar" --> MantPose["MoveAbsJ PoseMant"]
+    DO02_On --> HoldMant{"Bucle de retención:<br>WHILE DI_02 == 0"}
+    HoldMant -- "Pulsador no oprimido (0)" --> MantPose["Ejecutar ModoMantenimiento:<br>MoveAbsJ PoseMant"]
     MantPose --> HoldMant
-    HoldMant -- "Liberar" --> HomeMant["Ejecutar Path_Home<br>Desactivar DO_02 = 0"]
+    HoldMant -- "2do pulso DI_02 == 1" --> HomeMant["Ejecutar Path_Home<br>Desactivar DO_02 = 0"]
     HomeMant --> Loop
 
     %% DI_03 Branch
-    CheckDI02 -- "No" --> CheckDI03{"DI_03 == 1 ?<br>(Farmear Aura)"}
+    CheckDI02 -- "No" --> CheckDI03{"Pulso DI_03 == 1 ?<br>(Farmear Aura)"}
     CheckDI03 -- "Sí" --> DO03_On["Activar DO_03 = 1<br>Ejecutar Path_Home"]
     DO03_On --> AuraStart["MoveAbsJ Pose_Aura1"]
-    AuraStart --> AuraLoop["Bucle: FOR i = 1 TO 3<br>Pose_Aura2 &harr; Pose_Aura3"]
+    AuraStart --> AuraLoop["Bucle: FOR i = 1 TO 3<br>Pose_Aura2 <--> Pose_Aura3"]
     AuraLoop --> AuraEnd["MoveAbsJ Pose_Aura4<br>Ejecutar Path_Home<br>Desactivar DO_03 = 0"]
-    AuraEnd --> WaitDI03["Esperar a que DI_03 sea 0"]
-    WaitDI03 --> Loop
+    AuraEnd --> WaitDI03{"Liberación pulsador:<br>WHILE DI_03 == 1 ?"}
+    WaitDI03 -- "Sostenido" --> WaitRelease["WaitTime 0.1 s"]
+    WaitRelease --> WaitDI03
+    WaitDI03 -- "Liberado (0)" --> Loop
 
     CheckDI03 -- "No" --> Loop
 ```
@@ -224,13 +283,16 @@ A continuación se presenta el registro audiovisual oficial de la práctica en e
 ## 8. Aprendizajes y dificultades
 
 ### Aprendizajes clave
-- *[Completar con los aprendizajes técnicos específicos del equipo]*
-- *[Por ejemplo: efecto del filtrado de zonas z10 vs fine en la fluidez del trazado de Naruto, repetibilidad del robot al trabajar con WorkObjects]*
+- **Flujo CAD-to-Robot en trayectorias complejas:** Comprensión práctica de la integración entre diseño 2D/3D (Fusion 360), formato de intercambio geométrico `.SAT` y generación de trayectorias en RobotStudio mediante `Auto-Path`.
+- **Desacoplamiento de marcos de trabajo (WorkObjects):** La separación entre el marco de la base del robot y el WorkObject de la pieza permitió realizar traslados y calibraciones rápidas en la celda real sin tener que reprogramar los puntos individuales de dibujo.
+
+- **Lógica de control para señales transitorias:** Implementación de enclavamientos lógicos en RAPID para adaptar pulsadores momentáneos a funciones biestables (como en la pose de mantenimiento con `DI_02`).
 
 ### Dificultades encontradas y soluciones implementadas
-- *[Completar con las dificultades reales experimentadas]*
-- *[Por ejemplo: ajuste de la presión del marcador para trazo uniforme, calibración del tiempo exacto de detención de la banda transportadora con la inercia del variador]*
-
+- **Singularidades y marcos dispares en Auto-Path (*Target Unreachable*):**
+  - *Dificultad:* Al generar trayectorias sobre curvas cerradas complejas, RobotStudio creaba marcos de referencia de puntos con orientaciones aleatorias, y en zonas cercanas a la base del robot (barbilla de Naruto) se superaban los límites de alcance del manipulador.
+  - *Solución:* Se unificó la orientación de todos los marcos igualándolos a la orientación de la herramienta `MyNewTool`. Para los puntos críticos de mayor proximidad, se aplicó una rotación local en el eje Y de **5° a 15°**, permitiendo una postura accesible para el manipulador sin alterar la calidad del trazo.
+- **Calibración de tiempos y parada de la banda transportadora:**
+  - *Dificultad:* Debido a la inercia del conjunto motor-reductor-banda y la rampa de desaceleración del variador de frecuencia, el pastel no se detenía exactamente en la posición deseada si solo se consideraba la distancia nominal.
+  - *Solución:* Se realizaron calibraciones temporales empíricas en planta, determinando que `4.3 segundos` era el tiempo exacto (`TiempoEntrada` y `TiempoSalida`) para situar la base en el centro del espacio de trabajo del robot y posteriormente evacuarla.
 ---
-
-## 9. Instrucciones de reproducción
