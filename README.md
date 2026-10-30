@@ -12,7 +12,7 @@
 <h2>Profesores: <br>Pedro Fabián Cárdenas Herrera <br> Manuel Felipe Carranza Montenegro</h2>
 
 <h4>Ariel Giovanni Cardenas Santisteban<br>
-    Kennet Jared Cruz Machuc</h4>
+    Kennet Jared Cruz Machuca</h4>
 
 <p>
   <img alt="Ubuntu 24.04 LTS" src="https://img.shields.io/badge/Ubuntu-24.04%20LTS-E95420?logo=ubuntu&logoColor=white">
@@ -72,11 +72,11 @@ Soy estudiante de Ingeniería Mecatrónica orientándome hacia la maestría en A
   <img src="./assets/integrantes/integrante2.jpg" alt="Foto integrante 2" width="180" height="180" style="border-radius: 50%; object-fit: cover;"><br><br>
 </div>
 
-- **Nombre completo:** Nombre Apellido
+- **Nombre completo:** Kennet Jared Cruz Machuca
 - **Carrera:** Ingeniería Mecatrónica
-- **Correo institucional:** nombre@unal.edu.co
-- **Usuario de GitHub:** [usuariogithub](https://github.com/usuariogithub)
+- **Correo institucional:** kcruzm@unal.edu.co
+- **Usuario de GitHub:** [jaredkcruzm](https://github.com/jaredkcruzm)
 - **Rol en el equipo:** Ej. Modelado, programación, control
-- **Intereses:** Manipulación, ROS 2, control de robots
+- **Intereses:** Manipulación, ROS 2, control de robots (Ej)
 - **Descripción breve:**  
   Escribe aquí una breve presentación personal y académica del integrante.

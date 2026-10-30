@@ -11,7 +11,7 @@
 **Universidad Nacional de Colombia — Sede Bogotá**  
 **Facultad de Ingeniería · Departamento de Ingeniería Mecánica y Mecatrónica**  
 **Asignatura:** Robótica (2026-II)  
-**Grupo 5B:** Ariel Giovanni Cárdenas Santisteban · Jared Cruz
+**Grupo 5B:** Ariel Giovanni Cadenas Santisteban · Kennet Jared Cruz Machuca
 
 </div>
 
@@ -40,17 +40,17 @@ La tarea de decoración se diseñó de forma conjunta por el equipo y comprende:
 - **Modos de operación:** Implementación de tres rutinas independientes seleccionadas mediante las entradas digitales del módulo DSQC 652:
   1. **`DI_01` — Ciclo automático de decoración:** Ingreso del pastel sobre la banda transportadora, detención en la estación de trabajo, ejecución de las trayectorias de dibujo por parte del robot y evacuación del producto terminado hacia el final de la banda.
   2. **`DI_02` — Pose de mantenimiento:** Desplazamiento seguro del robot a una posición accesible para inspección, ajuste o cambio del marcador.
-  3. **`DI_03` — Rutina *Farmear Aura*:** Coreografía de movimiento libre desarrollada por el equipo como componente creativo y de verificación cinemática.
+  3. **`DI_03` — Rutina *Farmear Aura*:** Mvimiento libre desarrollada por el equipo como componente creativo y de verificación cinemática.
 
 ---
 
 ## 2. Objetivos alcanzados
 
 - Diseñar y acoplar mecánicamente un portamarcador funcional al flange del manipulador ABB IRB 140.
-- Calibrar la herramienta tanto en el entorno virtual de **RobotStudio** como en el robot real mediante el método de 4 puntos en el FlexPendant.
-- Definir y calibrar el sistema de coordenadas de trabajo (**WorkObject**) sobre la superficie circular de trabajo.
+- Calibrar la herramienta tanto en el entorno virtual de **RobotStudio** como en el robot real usando el método de 4 puntos en el Teach Pendant.
+- Definir y calibrar (tanto físico como virtualmente) el sistema de coordenadas de trabajo (**WorkObject**) sobre la superficie circular de trabajo.
 - Programar la secuencia modular en lenguaje **RAPID**, implementando trayectorias lineales (`MoveL`), articulares (`MoveJ`, `MoveAbsJ`) y control de aproximación/zona (`fine`, `z10`).
-- Integrar las señales de entrada y salida digitales (módulo **DSQC 652**) para coordinar el movimiento bidireccional de la banda transportadora (`FWD_Conveyor`, `BWD_Conveyor`) y la señalización de estado del robot (`DO_01`, `DO_02`, `DO_03`).
+- Integrar las señales de entrada y salida digitales para coordinar el movimiento bidireccional de la banda transportadora (`FWD_Conveyor`, `BWD_Conveyor`) y la señalización de estado del robot (`DO_01`, `DO_02`, `DO_03`).
 - Validar la seguridad y prevención de colisiones mediante enclavamientos lógicos en RAPID antes de la ejecución en la celda física.
 
 ---
@@ -63,9 +63,8 @@ La organización de los archivos asociados a este laboratorio es la siguiente:
 Laboratorio No. 01 - Robótica Industrial ABB IRB140 y RobotStudio/
 ├── README.MD               # Documentación principal de la práctica
 ├── CAD/                    # Modelos geométricos de la herramienta (formato .SAT)
-├── RAPID/                  # Código fuente del programa (.mod)
-├── RobotStudio/            # Estación y paquete de simulación (.rspag)
-└── Resultados/             # Fotografías, evidencias de planta y ejecuciones
+├── RAPID/                  # Código fuente del programa (.mod y .txt)
+└── Resultados/             # Fotografías y evidencias de la celda
 ```
 
 ---
@@ -85,8 +84,10 @@ Para ejecutar el trazado sobre la pizarra redonda sin dañar el marcador ni comp
 | Masa aproximada | *[Completar: ej. 0.15 kg]* |
 | Material de fabricación | *[Completar: ej. PLA / Impresión 3D]* |
 
-> [!NOTE]
-> *(Una vez cargada la imagen o render del diseño en `Resultados/portamarcador.png`, se enlazará en este apartado).*
+<div align="center">
+  <img src="./Resultados/portamarcador_robot.jpg" alt="Portamarcador montado en el robot ABB IRB 140" width="360"><br>
+  <em>Figura 4.1: Portamarcador acoplado al flange del ABB IRB 140 sobre la estación de trabajo.</em>
+</div><br>
 
 ---
 
@@ -95,15 +96,23 @@ Para ejecutar el trazado sobre la pizarra redonda sin dañar el marcador ni comp
 ### 5.1 Tool Center Point (TCP)
 La calibración física del TCP se llevó a cabo en el laboratorio mediante el FlexPendant utilizando el método de aproximación por 4 puntos a una referencia fija cónica. En RobotStudio, el TCP virtual se obtuvo a partir de las coordenadas del modelo CAD acoplado al flange.
 
-| Parámetro | Simulación (RobotStudio) | Robot real (FlexPendant) | Error / Diferencia |
-|---|---|---|---|
-| **X [mm]** | *[Completar]* | *[Completar]* | *[Completar]* |
-| **Y [mm]** | *[Completar]* | *[Completar]* | *[Completar]* |
-| **Z [mm]** | *[Completar]* | *[Completar]* | *[Completar]* |
-| **Orientación (q1, q2, q3, q4)** | *[Completar]* | *[Completar]* | — |
+A continuación se presentan los valores nominales registrados en el módulo RAPID (`MyNewTool`):
 
-### 5.2 WorkObject (Superficie de trabajo)
-Se definió un objeto de trabajo correspondiente a la superficie plana circular. Este objeto permite desacoplar las trayectorias de la posición absoluta de la base del robot, facilitando su reubicación o reutilización en otros cuadrantes sin modificar las trayectorias geométricas programadas.
+| Parámetro TCP | Valor obtenido (`tooldata MyNewTool`) |
+|---|---|
+| **Posición X [mm]** | `8.526` |
+| **Posición Y [mm]** | `1.820` |
+| **Posición Z [mm]** | `195.145` |
+| **Orientación Cuaternión `[q1, q2, q3, q4]`** | `[0.965926, 0.0, 0.258819, 0.0]` |
+| **Masa nominal [kg]** | `1.0` |
+
+### 5.2 WorkObjects (Superficies de trabajo)
+Se calibraron y utilizaron dos objetos de trabajo (`wobjdata`) para desacoplar las trayectorias geométricas del marco de referencia de la base del robot:
+
+| WorkObject | Coordenadas origen `[X, Y, Z]` (mm) | Rotación Cuaternión `[q1, q2, q3, q4]` | Función |
+|---|---|---|---|
+| **`Cara`** | `[540.229, 0.016, 186.500]` | `[0.0, 0.707107, 0.707107, 0.0]` | Marco de referencia principal centrado sobre el pastel para el rostro de Naruto y los nombres |
+| **`Workobject_1`** | `[472.139, 2.804, 186.500]` | `[0.0, 0.573618, 0.819123, 0.0]` | Marco alterno para reubicación y pruebas de traslación |
 
 ---
 
@@ -129,16 +138,53 @@ Se definió un objeto de trabajo correspondiente a la superficie plana circular.
 
 El código RAPID está estructurado en procedimientos especializados:
 
-- **`main()`**: Ciclo principal de supervisión que consulta el estado de las entradas digitales y deriva la ejecución a la subrutina correspondiente.
-- **`CicloDecoracion()`**: Secuencia que coordina el avance de la banda, detención, llamado al trazado, retorno a HOME y evacuación del pastel.
-- **`RutinaDecoracion()`**: Trazado continuo que ejecuta los nombres perimetrales (**Ariel** y **Jared**) y el rostro central de **Naruto** sobre el WorkObject.
-- **`PoseMantenimiento()`**: Desplazamiento articular a una posición elevada y accesible.
-- **`FarmearAura()`**: Secuencia coreográfica libre de movimientos coordinados del manipulador.
-- **`HomeRobot()`**: Retorno seguro mediante `MoveAbsJ` a la pose de reposo.
-- **`ConveyorForward()`, `ConveyorBackward()`, `ConveyorStop()`**: Rutinas de control de la banda con tiempos de espera (`WaitTime`) para evitar transiciones bruscas.
+- **`main()`**: Ciclo principal de supervisión que inicializa las señales en cero (`Reset`), posiciona el robot en `Path_Home` y ejecuta un bucle continuo (`WHILE TRUE`) evaluando los modos de operación.
+- **`RutinaDecoracion()`**: Coordina el trazado secuencial de contornos y detalles. Entre cada sección se llama a `Path_Pausa()` para elevar la herramienta hacia `Target_Pausa` (`Z = -35.3 mm`), evitando rayones indeseados:
+  - *Rostro de Naruto:* `Path_ContornoExterno`, `Cabello`, `ContornoCara`, `Frente`, `Boca`, `BandaNinja`, `SimboloNinja`, orejas (1 y 2 para derecha e izquierda) y detalles (1 al 7).
+  - *Nombres:*
+    - **Ariel:** `Path_Nombre1_A1`, `A2`, `R1`, `R2`, `I`, `E`, `L`.
+    - **Jared:** `Path_Nombre2_J`, `A1`, `A2`, `R1`, `R2`, `E`, `D1`, `D2`.
+  - *Pintado final:* `Path_Pintar1`, `Path_Pintar2`.
+- **`ModoMantenimiento()`**: Desplaza el robot mediante `MoveAbsJ` a `PoseMant` (`[-30°, -10°, 10°, 0°, 30°, 0°]`).
+- **`FarmearAura()`**: Coreografía con bucle iterativo `FOR i FROM 1 TO 3` alternando entre `Pose_Aura2` y `Pose_Aura3`, con entrada y salida hacia `Pose_Aura1` y `Pose_Aura4`.
+- **`ConveyorForward()`, `ConveyorBackward()`, `ConveyorStop()`**: Control del avance y reversa con tiempos de temporización calibrados (`TiempoEntrada = 4.3 s`, `TiempoSalida = 4.3 s`).
 
-> [!TIP]
-> **Diagrama de flujo:** El diagrama detallado de la secuencia completa se integrará formalmente una vez se incorpore el archivo fuente final en `RAPID/`.
+### 6.3 Diagrama de flujo del sistema
+
+```mermaid
+flowchart TD
+    Start(["Inicio: main()"]) --> Init["Resetear señales (DO_01, DO_02, DO_03, FWD, BWD)<br>Ejecutar Path_Home"]
+    Init --> Loop{"Bucle continuo: WHILE TRUE"}
+
+    %% DI_01 Branch
+    Loop --> CheckDI01{"DI_01 == 1 ?<br>(Ciclo Decoracion)"}
+    CheckDI01 -- "Sí" --> DO01_On["Activar DO_01 = 1"]
+    DO01_On --> FWD_In["Activar FWD_Conveyor<br>WaitTime 4.3 s<br>Detener FWD_Conveyor"]
+    FWD_In --> ExecDecor["Ejecutar RutinaDecoracion:<br>1. Contornos y Rostro Naruto<br>2. Nombre ARIEL<br>3. Nombre JARED<br>4. Pintado y retorno Home"]
+    ExecDecor --> FWD_Out["Activar FWD_Conveyor<br>WaitTime 4.3 s<br>Detener FWD_Conveyor"]
+    FWD_Out --> DO01_Off["Desactivar DO_01 = 0"]
+    DO01_Off --> Loop
+
+    %% DI_02 Branch
+    CheckDI01 -- "No" --> CheckDI02{"DI_02 == 1 ?<br>(Mantenimiento)"}
+    CheckDI02 -- "Sí" --> DO02_On["Activar DO_02 = 1<br>Ejecutar Path_Home"]
+    DO02_On --> HoldMant{"Bucle: WHILE DI_02 == 0"}
+    HoldMant -- "Esperar" --> MantPose["MoveAbsJ PoseMant"]
+    MantPose --> HoldMant
+    HoldMant -- "Liberar" --> HomeMant["Ejecutar Path_Home<br>Desactivar DO_02 = 0"]
+    HomeMant --> Loop
+
+    %% DI_03 Branch
+    CheckDI02 -- "No" --> CheckDI03{"DI_03 == 1 ?<br>(Farmear Aura)"}
+    CheckDI03 -- "Sí" --> DO03_On["Activar DO_03 = 1<br>Ejecutar Path_Home"]
+    DO03_On --> AuraStart["MoveAbsJ Pose_Aura1"]
+    AuraStart --> AuraLoop["Bucle: FOR i = 1 TO 3<br>Pose_Aura2 &harr; Pose_Aura3"]
+    AuraLoop --> AuraEnd["MoveAbsJ Pose_Aura4<br>Ejecutar Path_Home<br>Desactivar DO_03 = 0"]
+    AuraEnd --> WaitDI03["Esperar a que DI_03 sea 0"]
+    WaitDI03 --> Loop
+
+    CheckDI03 -- "No" --> Loop
+```
 
 ---
 
@@ -146,7 +192,21 @@ El código RAPID está estructurado en procedimientos especializados:
 
 La implementación física fue validada de forma completa en el laboratorio del LabSIR, ejecutando tanto el ciclo de transporte como el trazado real sobre la pizarra circular con el marcador.
 
-### Video oficial de la práctica (Canal LabSIR - YouTube)
+### 7.1 Evidencias fotográficas de la implementación real
+
+A continuación se presentan los registros fotográficos obtenidos durante las pruebas en la celda del laboratorio:
+
+| Vista general de la celda y montaje | Detalle del trazado final |
+|:---:|:---:|
+| <img src="./Resultados/celda_robot_setup.jpg" alt="Celda robot y montaje" width="380"> | <img src="./Resultados/pastel_decorado_final.jpg" alt="Torta decorada final" width="380"> |
+| *Figura 7.1: Disposición del ABB IRB 140, banda transportadora y herramienta montada.* | *Figura 7.2: Resultado del trazado con los nombres Ariel, Jared y el rostro de Naruto.* |
+
+<div align="center">
+  <img src="./Resultados/pastel_en_banda.jpg" alt="Pastel sobre la banda transportadora" width="420"><br>
+  <em>Figura 7.3: Pastel posicionado sobre la banda transportadora al concluir el ciclo automático.</em>
+</div>
+
+### 7.2 Registro audiovisual (Canal oficial LabSIR - YouTube)
 
 A continuación se presenta el registro audiovisual oficial de la práctica en el robot real:
 
@@ -174,14 +234,3 @@ A continuación se presenta el registro audiovisual oficial de la práctica en e
 ---
 
 ## 9. Instrucciones de reproducción
-
-1. **Simulación en RobotStudio:**
-   - Clonar o descargar el repositorio.
-   - Abrir RobotStudio (versión 2020 o superior).
-   - Restaurar el paquete de estación ubicado en [`RobotStudio/`](./RobotStudio/).
-2. **Carga del código RAPID:**
-   - En el controlador virtual o real, cargar el módulo contenido en [`RAPID/`](./RAPID/).
-   - Verificar la configuración de señales I/O del módulo DSQC 652 en la pestaña de configuración del controlador.
-3. **Puesta en marcha y seguridad:**
-   - Verificar en modo manual y con velocidad reducida (25%) el primer ciclo completo.
-   - Constatar que la parada de emergencia se encuentre despejada y operativa antes de pasar a modo automático.
