@@ -84,7 +84,7 @@ Para su manufactura, se consultó la hoja de datos del manipulador para extraer 
 | Mecanismo de sujeción | Prisionero / Ajuste mecánico para marcador |
 | Formato disponible | `.SAT` |
 | Masa aproximada | *[0,14 kg]* |
-| Material de fabricación | *[Completar: ej. PLA / Impresión 3D]* |
+| Material de fabricación | *[PLA]* |
 
 <div align="center">
   <img src="./Resultados/Herramienta_Completa.png" alt="Renderizado del portamarcador" width="400"><br>
