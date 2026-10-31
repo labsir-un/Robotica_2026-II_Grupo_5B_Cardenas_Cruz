@@ -69,14 +69,14 @@ Soy estudiante de Ingeniería Mecatrónica orientándome hacia la maestría en A
 
 ### Integrante 2
 <div align="center">
-  <img src="./assets/integrantes/integrante2.jpg" alt="Foto integrante 2" width="180" height="180" style="border-radius: 50%; object-fit: cover;"><br><br>
+  <img src="./assets/integrantes/Integrante2.jpeg" alt="Foto integrante 2" width="180" height="180" style="border-radius: 50%; object-fit: cover;"><br><br>
 </div>
 
 - **Nombre completo:** Kennet Jared Cruz Machuca
 - **Carrera:** Ingeniería Mecatrónica
 - **Correo institucional:** kcruzm@unal.edu.co
 - **Usuario de GitHub:** [jaredkcruzm](https://github.com/jaredkcruzm)
-- **Rol en el equipo:** Ej. Modelado, programación, control
-- **Intereses:** Manipulación, ROS 2, control de robots (Ej)
+- **Rol en el equipo:** Modelado y diseño CAD, documentación, simulación
+- **Intereses:** Biomédica, nanomateriales, integración de sistemas mecatrónicos, sensórica, educación STEAM
 - **Descripción breve:**  
-  Escribe aquí una breve presentación personal y académica del integrante.
+Ingeniero Mecánico y estudiante de Ingeniería Mecatrónica, con interés en el desarrollo de soluciones tecnológicas y en la educación STEAM. Busco desarrollar mi formación hacia el diseño de sistemas mecatrónicos que resuelvan problemas y contribuir a la modernización tecnológica de diferentes sectores en Colombia.
