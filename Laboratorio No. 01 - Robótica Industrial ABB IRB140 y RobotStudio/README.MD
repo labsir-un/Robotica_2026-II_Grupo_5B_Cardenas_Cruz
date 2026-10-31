@@ -73,7 +73,9 @@ Laboratorio No. 01 - Robótica Industrial ABB IRB140 y RobotStudio/
 
 Para ejecutar el trazado sobre la pizarra redonda sin dañar el marcador ni comprometer la precisión de la trayectoria, se diseñó un soporte portaherramienta acoplable al plato portaherramientas (flange) del ABB IRB 140.
 
-- **Archivo CAD:** El modelo en formato de intercambio se encuentra alojado en [`CAD/`](./CAD/).
+Para su manufactura, se consultó la hoja de datos del manipulador para extraer los patrones de medida y tolerancias del patrón de orificios del *flange* mecánico. Con base en las medidas reales, se diseñó la geometría en software CAD y se fabricó mediante impresión 3D en PLA. Para facilitar el montaje y desmontaje en el laboratorio, se seleccionó una unión roscada entre la base atornillada y el tubo principal del portamarcador, garantizando un acople adecuado que permita extraer el marcador fácilmente.
+
+- **Archivo CAD:** El modelo en formato SAT se encuentra alojado en [`CAD/`](./CAD/).
 - **Características de la herramienta:**
 
 | Parámetro | Detalle / Valor |
@@ -81,12 +83,17 @@ Para ejecutar el trazado sobre la pizarra redonda sin dañar el marcador ni comp
 | Tipo de acople | Flange estándar ABB IRB 140 |
 | Mecanismo de sujeción | Prisionero / Ajuste mecánico para marcador |
 | Formato disponible | `.SAT` |
-| Masa aproximada | *[Completar: ej. 0.15 kg]* |
+| Masa aproximada | *[0,14 kg]* |
 | Material de fabricación | *[Completar: ej. PLA / Impresión 3D]* |
 
 <div align="center">
+  <img src="./Resultados/Herramienta_Completa.png" alt="Renderizado del portamarcador" width="400"><br>
+  <em>Figura 4.1: Renderizado del portamarcador inclinado con ensamble de marcador y soporte.</em>
+</div><br>
+
+<div align="center">
   <img src="./Resultados/portamarcador_robot.jpg" alt="Portamarcador montado en el robot ABB IRB 140" width="360"><br>
-  <em>Figura 4.1: Portamarcador acoplado al flange del ABB IRB 140 sobre la estación de trabajo.</em>
+  <em>Figura 4.2: Portamarcador acoplado al flange del ABB IRB 140 sobre la estación de trabajo.</em>
 </div><br>
 
 ---
@@ -153,6 +160,35 @@ Para lograr el trazado preciso del rostro de Naruto y los nombres sin incurrir e
    - *Solución (Homogeneización de marcos):* Se configuró un marco de referencia con una orientación similar a la de la herramienta (`MyNewTool`) en posición de trabajo, y se replicó dicha orientación homogéneamente a todos los puntos de la trayectoria.
    - *Problema en puntos críticos cercanos a la base:* En las curvas más próximas a la base del manipulador (como el contorno de la barbilla de Naruto), persistían errores de alcanzabilidad cinemática.
    - *Solución (Rotación angular en el eje Y):* Se rotaron los marcos de referencia de dichos puntos críticos alrededor de su eje local **Y** entre **5° y 15°** (aplicando 15° a los puntos más cercanos al robot). Esta ligera inclinación facilitó la aproximación cinemática del brazo sin perder el contacto del marcador sobre la pizarra.
+
+Para simular la celda automatizada en RobotStudio y validar el transporte del pastel previa ejecución física, se configuró un **Smart Component** dedicado a la banda transportadora (`Banda`).
+
+<div align="center">
+  <img src="./Resultados/entornosimulacion.png" alt="Entorno de simulación en RobotStudio" width="600"><br>
+  <em>Figura 5.1: Vista del entorno de simulación en RobotStudio con el robot ABB IRB 140, la herramienta y la banda.</em>
+</div><br>
+
+#### 5.4 Arquitectura de control y enlazamiento de señales:
+
+1. **Lógica de Estación (Conexión de Señales E/S):**
+   En la pestaña *Señales y conexiones* de la Lógica de Estación, se vincularon directamente las salidas digitales del controlador del robot `IRB140_6_81` hacia las entradas del Smart Component de la banda:
+   - `IRB140_6_81 / FWD_Conveyor` $\rightarrow$ `Banda / FWD`
+   - `IRB140_6_81 / BWD_Conveyor` $\rightarrow$ `Banda / BWD`
+
+<div align="center">
+  <img src="./Resultados/SmartComponent_Logica_Estacion.png" alt="Conexión de señales E/S en la Estación Lógica" width="600"><br>
+  <em>Figura 5.2: Tabla de conexiones entre las salidas de control del manipulador y las entradas digitales de la banda.</em>
+</div><br>
+
+2. **Estructura interna del Smart Component (`Diseño` / `Componer`):**
+   En el panel interno del Smart Component, la señal de avance o retroceso interactúa con dos actuadores de movimiento lineal (`Mover_FWD` a $+Y$ y `Mover_BWD` a $-Y$ con velocidad de $193\text{ mm/s}$).
+   - **Procesamiento mediante compuertas lógicas:** Las entradas `FWD` y `BWD` se ramifican hacia una red de compuertas `AND` (`LogicGate`, `LogicGate_3`) y `OR` (`LogicGate_2`, `LogicGate_4`).
+   - **Enclavamiento dinámico:** Aunque en el flujo principal del simulador el movimiento lineal lo desencadenan directamente los comandos de RAPID, la presencia de esta red de compuertas internamente cumple la función de enclavamiento de seguridad para evitar habilitar ambos motores lineales en sentido opuesto en la simulación.
+
+<div align="center">
+  <img src="./Resultados/SmartComponen_Banda.png" alt="Diagrama de bloques internos del Smart Component" width="600"><br>
+  <em>Figura 5.3: Diagrama de bloques interno del Smart Component mostrando los actuadores lineales Mover_FWD/Mover_BWD y las compuertas lógicas de control.</em>
+</div><br>
 
 ---
 
