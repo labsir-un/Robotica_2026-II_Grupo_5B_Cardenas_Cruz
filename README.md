@@ -69,7 +69,7 @@ Soy estudiante de Ingeniería Mecatrónica orientándome hacia la maestría en A
 
 ### Integrante 2
 <div align="center">
-  <img src="./assets/integrantes/Integrante2.jpeg" alt="Foto integrante 2" width="180" height="250" style="border-radius: 50%; object-fit: cover;"><br><br>
+  <img src="./assets/integrantes/integrante2.png" alt="Foto integrante 2" width="180" height="250" style="border-radius: 50%; object-fit: cover;"><br><br>
 </div>
 
 - **Nombre completo:** Kennet Jared Cruz Machuca
