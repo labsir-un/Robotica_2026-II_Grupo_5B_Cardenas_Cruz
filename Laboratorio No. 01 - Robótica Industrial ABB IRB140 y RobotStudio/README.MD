@@ -181,7 +181,7 @@ Para simular la celda automatizada en RobotStudio y validar el transporte del pa
 </div><br>
 
 2. **Estructura interna del Smart Component (`Diseño` / `Componer`):**
-   En el panel interno del Smart Component, la señal de avance o retroceso interactúa con dos actuadores de movimiento lineal (`Mover_FWD` a $+Y$ y `Mover_BWD` a $-Y$ con velocidad de $193\text{ mm/s}$).
+   En el panel interno del Smart Component, la señal de avance o retroceso interactúa con dos actuadores de movimiento lineal (`Mover_FWD` a $+Y$ y `Mover_BWD` a $-Y$ con velocidad de $193\text{ mm/s}$ escogida según el tiempo de operación de la banda que son 4,3 segundos aproximadamente).
    - **Procesamiento mediante compuertas lógicas:** Las entradas `FWD` y `BWD` se ramifican hacia una red de compuertas `AND` (`LogicGate`, `LogicGate_3`) y `OR` (`LogicGate_2`, `LogicGate_4`).
    - **Enclavamiento dinámico:** Aunque en el flujo principal del simulador el movimiento lineal lo desencadenan directamente los comandos de RAPID, la presencia de esta red de compuertas internamente cumple la función de enclavamiento de seguridad para evitar habilitar ambos motores lineales en sentido opuesto en la simulación.
 
