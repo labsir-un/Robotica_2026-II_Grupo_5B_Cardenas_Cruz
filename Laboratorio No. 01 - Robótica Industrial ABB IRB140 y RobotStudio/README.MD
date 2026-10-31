@@ -176,7 +176,7 @@ Para simular la celda automatizada en RobotStudio y validar el transporte del pa
    - `IRB140_6_81 / BWD_Conveyor` $\rightarrow$ `Banda / BWD`
 
 <div align="center">
-  <img src="./Resultados/SmartComponent_Logica_Estacion.png" alt="Conexión de señales E/S en la Estación Lógica" width="600"><br>
+  <img src="./Resultados/SmartComponent_Logica_Estacion.png" alt="Conexión de señales E/S en la Estación Lógica" width="500"><br>
   <em>Figura 5.2: Tabla de conexiones entre las salidas de control del manipulador y las entradas digitales de la banda.</em>
 </div><br>
 
@@ -186,7 +186,7 @@ Para simular la celda automatizada en RobotStudio y validar el transporte del pa
    - **Enclavamiento dinámico:** Aunque en el flujo principal del simulador el movimiento lineal lo desencadenan directamente los comandos de RAPID, la presencia de esta red de compuertas internamente cumple la función de enclavamiento de seguridad para evitar habilitar ambos motores lineales en sentido opuesto en la simulación.
 
 <div align="center">
-  <img src="./Resultados/SmartComponen_Banda.png" alt="Diagrama de bloques internos del Smart Component" width="600"><br>
+  <img src="./Resultados/SmartComponen_Banda.png" alt="Diagrama de bloques internos del Smart Component" width="400"><br>
   <em>Figura 5.3: Diagrama de bloques interno del Smart Component mostrando los actuadores lineales Mover_FWD/Mover_BWD y las compuertas lógicas de control.</em>
 </div><br>
 
