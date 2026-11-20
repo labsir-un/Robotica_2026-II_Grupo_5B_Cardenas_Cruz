@@ -11,7 +11,7 @@
 **Universidad Nacional de Colombia — Sede Bogotá**  
 **Facultad de Ingeniería · Departamento de Ingeniería Mecánica y Mecatrónica**  
 **Asignatura:** Robótica (2026-II)  
-**Grupo 5B:** Ariel Giovanni Cadenas Santisteban · Kennet Jared Cruz Machuca
+**Grupo 5B:** Ariel Giovanni Cárdenas Santisteban · Kennet Jared Cruz Machuca
 
 </div>
 
@@ -81,8 +81,8 @@ Para ejecutar el trazado sobre la pizarra redonda sin dañar el marcador ni comp
 | Tipo de acople | Flange estándar ABB IRB 140 |
 | Mecanismo de sujeción | Prisionero / Ajuste mecánico para marcador |
 | Formato disponible | `.SAT` |
-| Masa aproximada | *[Completar: ej. 0.15 kg]* |
-| Material de fabricación | *[Completar: ej. PLA / Impresión 3D]* |
+| Masa aproximada | 0.14 kg |
+| Material de fabricación | PLA (Impresión 3D) |
 
 <div align="center">
   <img src="./Resultados/portamarcador_robot.jpg" alt="Portamarcador montado en el robot ABB IRB 140" width="360"><br>
@@ -112,7 +112,7 @@ La calibración física del efector final se realizó en la celda mediante el Te
 | **Posición Z [mm]** | `200.110` | `195.145` | `-4.965` |
 | **Distancia entre TCPs [mm]** | — | — | **`6.125`** |
 | **Orientación Cuaternión `[q1, q2, q3, q4]`** | `[1.0, 0.0, 0.0, 0.0]` | `[0.965926, 0.0, 0.258819, 0.0]` | Rotación de 30° en Y |
-| **Masa nominal [kg]** | `1.0` | `1.0` | `0.0` |
+| **Masa nominal [kg]** | `0.14` | `0.14` | `0.0` |
 
 **Análisis de discrepancias del TCP:**
 - **Precisión dimensional:** La diferencia entre ambos puntos de referencia es de **`6.125 mm`**, concentrándose la mayor variación en los ejes Y (`-3.58 mm`) y Z (`-4.96 mm`). Esta diferencia se atribuye a dos factores principales: en primer lugar, a la apreciación visual durante la alineación manual a la punta en los 4 puntos de aproximación en el laboratorio, y en segundo lugar, a las tolerancias dimensionales del soporte impreso en 3D y el ajuste mecánico del marcador (El porta marcador contaba con cierta capacidad de retracción debido a su resorte interno, lo que dificultaba la obtención de un punto de contacto preciso y repetible).

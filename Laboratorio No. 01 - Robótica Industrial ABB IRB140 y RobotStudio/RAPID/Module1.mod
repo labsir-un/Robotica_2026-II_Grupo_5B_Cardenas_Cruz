@@ -1,7 +1,7 @@
 MODULE Module1
     TASK PERS wobjdata Workobject_1:=[FALSE,TRUE,"",[[472.139180242,2.803580658,186.5],[0,0.573617827,0.819123061,0]],[[0,0,0],[1,0,0,0]]];
     TASK PERS wobjdata Cara:=[FALSE,TRUE,"",[[540.229,0.016,186.5],[0,0.707106781,0.707106781,0]],[[0,0,0],[1,0,0,0]]];
-    PERS tooldata MyNewTool:=[TRUE,[[8.526,1.82,195.145],[0.965925826,0,0.258819045,0]],[1,[0,0,1],[1,0,0,0],0,0,0]];
+    PERS tooldata MyNewTool:=[TRUE,[[8.526,1.82,195.145],[0.965925826,0,0.258819045,0]],[0.14,[0,0,1],[1,0,0,0],0,0,0]];
     CONST robtarget Target_10:=[[-45.629166667,12.05,-2],[0.71519384,0,0,-0.698926156],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     CONST robtarget Target_20:=[[-46.396458333,17.381354167,-2],[0.71519384,0,0,-0.698926156],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
     CONST robtarget Target_30:=[[-42.49468099,20.715104167,-2],[0.71519384,0,0,-0.698926156],[0,0,0,0],[9E+09,9E+09,9E+09,9E+09,9E+09,9E+09]];
@@ -656,25 +656,17 @@ MODULE Module1
         Reset DO_01;
         Reset DO_02;
         Reset DO_03;
-        Reset FWD_Conveyor;
-        Reset BWD_Conveyor;
+        ConveyorStop;
         Path_Home;
         
         WHILE TRUE DO
             
             IF DI_01=1 THEN
-                Set DO_01;
-                SET FWD_Conveyor;
-                WaitTime TiempoEntrada;
-                RESET FWD_Conveyor;
-                RutinaDecoracion;
-                SET FWD_Conveyor;
-                WaitTime TiempoSalida;
-                RESET FWD_Conveyor;
-                Reset DO_01;
+                CicloDecoracion;
             ENDIF
             
             IF DI_02 = 1 THEN
+                ConveyorStop;
                 Set DO_02;
                 Path_Home;
                 WHILE DI_02 = 0 DO
@@ -685,6 +677,7 @@ MODULE Module1
             ENDIF
             
             IF DI_03 = 1 THEN
+                ConveyorStop;
                 Set DO_03;
                 FarmearAura;
                 Reset DO_03;
@@ -699,9 +692,9 @@ MODULE Module1
     PROC RutinaVuelta()
         IF DI_02 = 1 THEN
             Path_Home;
-            Set BWD_Conveyor;
+            ConveyorBackward;
             WaitTime 4.3;
-            Reset BWD_Conveyor;
+            ConveyorStop;
         ENDIF
     ENDPROC
     
@@ -1533,7 +1526,6 @@ ENDPROC
     PROC CicloDecoracion()
         ConveyorStop;
         ConveyorForward;
-        ConveyorStop;
         WaitTime TiempoEntrada;
         ConveyorStop;
         WaitTime TiempoDeslizamiento;
@@ -1542,23 +1534,18 @@ ENDPROC
         Reset DO_01;
         Path_Home;
         ConveyorForward;
-        ConveyorStop;
         WaitTime TiempoSalida;
         ConveyorStop;
         WaitTime TiempoDeslizamiento;
     ENDPROC
     PROC ConveyorForward()
-        ConveyorStop;
         Reset BWD_Conveyor;
         WaitTime 0.2;
-        ConveyorStop;
         Set FWD_Conveyor;
     ENDPROC
     PROC ConveyorBackward()
-        ConveyorStop;
         Reset FWD_Conveyor;
         WaitTime 0.2;
-        ConveyorStop;
         Set BWD_Conveyor;
     ENDPROC
     PROC ConveyorStop()

@@ -11,7 +11,7 @@
 
 <h2>Profesores: <br>Pedro Fabián Cárdenas Herrera <br> Manuel Felipe Carranza Montenegro</h2>
 
-<h4>Ariel Giovanni Cardenas Santisteban<br>
+<h4>Ariel Giovanni Cárdenas Santisteban<br>
     Kennet Jared Cruz Machuca</h4>
 
 <p>
@@ -56,7 +56,7 @@ Aquí se documentan los laboratorios, avances, resultados y la presentación de 
   <img src="./assets/integrantes/integrante1.png" alt="Foto Ariel Giovanni Cárdenas" width="180"><br><br>
 </div>
 
-- **Nombre completo:** Ariel Giovanni Cardenas Santisteban
+- **Nombre completo:** Ariel Giovanni Cárdenas Santisteban
 - **Carrera:** Ingeniería Mecatrónica
 - **Correo institucional:** arcardenass@unal.edu.co
 - **Usuario de GitHub:** [ArielDcg](https://github.com/ArielDcg)
