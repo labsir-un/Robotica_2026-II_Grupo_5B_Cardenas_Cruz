@@ -33,9 +33,9 @@
 
 ## 1. Descripción general y objetivos
 
-En esta práctica se desarrolla el análisis técnico, la operación manual mediante el **Teach Pendant DX100** y el control programado desde PC con **RoboDK (Python API)** del manipulador industrial **Yaskawa Motoman MH6** en el Laboratorio **Sala CAM** de la Universidad Nacional de Colombia.
+En esta práctica se analiza y opera el manipulador industrial **Yaskawa Motoman MH6** con controlador **DX100** en el Laboratorio **Sala CAM** de la Universidad Nacional de Colombia, contrastando sus capacidades técnicas y entorno de programación frente al **ABB IRB 140** empleado en el Laboratorio 1.
 
-*[Completar: redactar una breve descripción ejecutiva de la práctica integrando la comparación con el ABB IRB 140, la validación matemática en GeoGebra, la simulación en RoboDK y la ejecución física de la trayectoria polar junto con los nombres **KENNET** y **ARIEL**.]*
+El desarrollo integra tres ejes complementarios: la operación manual desde el **Teach Pendant DX100** (modos de coordenadas, niveles de velocidad y configuraciones de referencia `Home1`/`Home2`), la validación geométrica de una trayectoria polar en **GeoGebra**, y su simulación y ejecución física en tiempo real desde PC mediante la API de **Python en RoboDK**, concluyendo con el trazado de los nombres de los integrantes (**KENNET** y **ARIEL**) sobre el plano de trabajo.
 
 ### Objetivos y resultados de aprendizaje
 - Comparar las capacidades técnicas y aplicaciones del manipulador **Yaskawa Motoman MH6** frente al **ABB IRB 140**.
@@ -53,58 +53,80 @@ Laboratorio No. 02 - Robótica Industrial Motoman MH6 y RoboDK/
 ├── Python/                   # Scripts de control en Python (RoboDK API)
 │   └── Lab02_Kennet_Ariel.py # Trayectoria polar y trazado de nombres
 ├── Estacion_RoboDK/          # *[Agregar según corresponda: archivo .rdk de la estación]*
-└── Resultados/               # *[Agregar según corresponda: plano de planta, capturas y fotos]*
+└── Resultados/               # Evidencias fotográficas del Teach Pendant DX100 y celda
+    ├── home1_work_home_dx100.jpg
+    ├── home2_second_home_dx100.jpg
+    ├── teach_pendant_dx100.jpg
+    ├── dx100_estado_velocidad.jpg
+    └── pendant_celda_mh6.jpg
 ```
 
 ---
 
 ## 2. Comparación técnica: Yaskawa Motoman MH6 vs. ABB IRB 140
 
-| Característica | Yaskawa Motoman MH6 | ABB IRB 140 | Observación / Diferencia |
+| Característica | Yaskawa Motoman MH6 | ABB IRB 140 (`IRB 140-6/0.8`) | Observación / Diferencia |
 |---|---|---|---|
-| **Fabricante** | Yaskawa Motoman | ABB Robotics | *[Completar]* |
-| **Controlador** | DX100 | IRC5 | *[Completar]* |
-| **Grados de libertad** | 6 (`S`, `L`, `U`, `R`, `B`, `T`) | 6 (`J1`–`J6`) | *[Completar]* |
-| **Carga máxima (Payload)** | *[Completar desde hoja de datos]* | *[Completar desde hoja de datos]* | *[Completar]* |
-| **Alcance máximo horizontal / vertical** | *[Completar desde hoja de datos]* | *[Completar desde hoja de datos]* | *[Completar]* |
-| **Repetibilidad** | *[Completar desde hoja de datos]* | *[Completar desde hoja de datos]* | *[Completar]* |
-| **Velocidad máxima por eje** | *[Completar desde hoja de datos]* | *[Completar desde hoja de datos]* | *[Completar]* |
-| **Masa del manipulador** | *[Completar desde hoja de datos]* | *[Completar desde hoja de datos]* | *[Completar]* |
-| **Opciones de montaje** | *[Completar desde hoja de datos]* | *[Completar desde hoja de datos]* | *[Completar]* |
-| **Grado de protección (IP)** | *[Completar desde hoja de datos]* | *[Completar desde hoja de datos]* | *[Completar]* |
-| **Aplicaciones típicas** | *[Completar desde hoja de datos]* | *[Completar desde hoja de datos]* | *[Completar]* |
-
-### Análisis comparativo
-*[Completar: discutir en qué escenarios industriales conviene elegir el Motoman MH6 frente al ABB IRB 140 considerando relación carga/alcance, repetibilidad, cinemática y entorno de programación.]*
-
+| **Fabricante** | Yaskawa Motoman | ABB Robotics | Dos ecosistemas industriales distintos|
+| **Controlador** | DX100 (Teach Pendant 6.5", Windows CE) | IRC5 (RobotWare, FlexPendant) | Ambos permiten operación manual, automática y remota |
+| **Grados de libertad** | 6 (`S`, `L`, `U`, `R`, `B`, `T`) | 6 (`J1`–`J6`) | Misma arquitectura antropomórfica de 6 ejes |
+| **Carga máxima (Payload)** | `6 kg` | `6 kg` | Igual capacidad |
+| **Alcance máximo (H / V)** | `1422 mm` horizontal / `2486 mm` vertical | `810 mm` horizontal / `1243 mm` vertical | MH6 ofrece más alcance horizontal y una envolvente mas grande |
+| **Repetibilidad de pose** | `±0.08 mm` | `0.03 mm` (ISO 9283; `RT = 0.08 mm`) | IRB 140 ofrece mayor precisión de posicionamiento repetitivo |
+| **Velocidad máxima por eje** | `S: 220`, `L: 200`, `U: 220`, `R: 410`, `B: 410`, `T: 610 °/s` | `J1: 200`, `J2: 200`, `J3: 260`, `J4: 360`, `J5: 360`, `J6: 450 °/s` | MH6 es un poco más rápido en la base y en los ejes de la muñeca (`R, B, T`); IRB 140 solo lo supera en `J3` |
+| **Masa del manipulador** | `~130 kg` | `98 kg` (sin cables) | IRB 140 es más compacto y liviano |
+| **Opciones de montaje** | Piso, pared o techo (de cabeza) | Piso, invertido o pared en cualquier ángulo | Alta flexibilidad de instalación en ambos casos |
+| **Grado de protección (IP)** | `IP54` (cuerpo) / `IP67` (muñeca) | `IP67` integral (opciones Foundry Plus 2, SteamWash y Clean Room ISO 6) | IRB 140 pensado para ambientes más exigentes |
+| **Aplicaciones típicas** | Manipulación, alimentación de máquinas, ensamblaje, soldadura de arco, dispensado y empaque | Manipulación flexible, ensamblaje, pegado/dispensado, soldadura ligera, fundición y salas limpias | MH6 destaca en celdas amplias; IRB 140 en celdas compactas o ambientes severos |
 ---
 
-## 3. Configuraciones iniciales del Motoman MH6 (`home1` y `home2`)
+## 3. Configuraciones iniciales del Motoman MH6 (`Home1` y `Home2`)
 
-| Eje Motoman | Articulación | `home1` [°] | `home2` [°] | Observación |
+El controlador **DX100** gestiona dos posiciones de referencia predefinidas expresadas internamente en **pulsos de encoder** para cada articulación (`S, L, U, R, B, T`):
+
+- **`Home1` (*Work Home Position*):** Postura de reposo y guardado en la que el manipulador **se recoge sobre sí mismo**, plegando sus eslabones sobre la columna base para minimizar el espacio ocupado en la celda y reducir el par estático en paradas prolongadas.
+- **`Home2` (*Second Home Position*):** Postura operativa de referencia secundaria con **configuración en L invertida**, manteniendo el brazo elevado y la brida orientada hacia la mesa de trabajo, lista para iniciar trayectorias sin interferir con la base.
+
+| Eje Motoman | Articulación | `Home1` — *Work Home* (pulsos `ORIGIN`) | `Home2` — *Second Home* (pulsos `SPECIFIED`) | Interpretación geométrica |
 |:---:|---|:---:|:---:|---|
-| **`S`** | Base (`S-head`) | *[Completar]* | *[Completar]* | *[Completar]* |
-| **`L`** | Brazo inferior (`L-arm`) | *[Completar]* | *[Completar]* | *[Completar]* |
-| **`U`** | Brazo superior (`U-arm`) | *[Completar]* | *[Completar]* | *[Completar]* |
-| **`R`** | Rotación muñeca (`Wrist`) | *[Completar]* | *[Completar]* | *[Completar]* |
-| **`B`** | Inclinación muñeca (`Wrist`) | *[Completar]* | *[Completar]* | *[Completar]* |
-| **`T`** | Giro flange (`Wrist Flange`) | *[Completar]* | *[Completar]* | *[Completar]* |
+| **`S`** | Base (`S-head`) | `0` | `0` | Base centrada al frente en ambas posturas (`ORIGIN = CURRENT = 0`) |
+| **`L`** | Brazo inferior (`L-arm`) | `-115290` | `2037` | Fuertemente replegado hacia atrás en `Home1` vs. casi vertical/frontal en `Home2` |
+| **`U`** | Brazo superior (`U-arm`) | `-111622` | `2359` | Plegado sobre la columna en `Home1` vs. extendido en L invertida en `Home2` |
+| **`R`** | Rotación muñeca (`Wrist`) | `1` | `0` | Antebrazo centrado sin torsión acumulada |
+| **`B`** | Inclinación muñeca (`Wrist`) | `42647` | `-121` | Acompaña el plegado compacto en `Home1`; orienta la brida operativamente en `Home2` |
+| **`T`** | Giro flange (`Wrist Flange`) | `1392` | `1392` | Giro de brida de referencia equivalente en ambas posturas |
 
-- **Diferencias cinemáticas y geométricas:** *[Completar: describir la postura física del brazo, singularidades cercanas, margen articular y altura del efector en `home1` vs. `home2`.]*
-- **¿Cuál posición es mejor? Justificación:** *[Completar: responder explícitamente cuál de las dos configuraciones resulta más conveniente para iniciar la operación en la Sala CAM y justificar con criterios de seguridad, colisiones, singularidades y cercanía al espacio de trabajo.]*
-- **Evidencia visual:** *[Completar: insertar fotografía o captura comparativa de `home1` y `home2`.]*
+> [!NOTE]
+> **Verificación directa en Sala CAM (DX100):** Todos los pulsos mostrados corresponden a las lecturas registradas en el Teach Pendant del laboratorio, verificando `ORIGIN = CURRENT` en `Home1` (*Work Home Position*) y `DIFFERENCE = 0` (`SPECIFIED = CURRENT`) en `Home2` (*Second Home Pos*).
+
+- **Diferencias cinemáticas y geométricas:**
+  - **Envolvente y despeje respecto a la base:** En `Home1`, los eslabones `L` (`-115290`) y `U` (`-111622`) se pliegan verticalmente sobre la columna central reduciendo el radio de interferencia en la celda. En `Home2`, el brazo se proyecta en L invertida hacia el frente, alejando la muñeca y el efector de la estructura propia del robot.
+  - **Orientación y distancia al plano de trabajo:** `Home2` mantiene la herramienta a altura operativa y orientada hacia la superficie de dibujo, reduciendo el desplazamiento articular previo al primer punto de la trayectoria; `Home1` exige un despliegue amplio de `L` y `U` antes de aproximarse al plano.
+  - **Torque estático en reposo:** Al acercar los centros de masa al eje de la columna, `Home1` reduce el momento gravitacional sostenido sobre los ejes `L` y `U` cuando el manipulador permanece detenido fuera de ciclo.
+- **¿Cuál posición es mejor? Justificación:**
+  - **`Home2` (*Second Home*) es mejor para iniciar y cerrar ciclos de operación**, ya que la configuración en L invertida deja el efector preorientado hacia el plano de trabajo, acorta el recorrido hacia el punto inicial de trazado y aleja el brazo de la base disminuyendo el riesgo de autocolisión al arrancar movimientos `MoveJ`/`MoveL`.
+  - **`Home1` (*Work Home*) es preferible para reposo prolongado y seguridad espacial**, pues al recoger los eslabones sobre sí mismo minimiza el espacio ocupado en la Sala CAM y disminuye la carga mecánica estática sobre las articulaciones.
+
+| `Home1` (*Work Home Position*) en DX100 | `Home2` (*Second Home Pos*) en DX100 |
+|:---:|:---:|
+| <img src="./Resultados/home1_work_home_dx100.jpg" alt="Lectura de pulsos Work Home Position en DX100" width="360"> | <img src="./Resultados/home2_second_home_dx100.jpg" alt="Lectura de pulsos Second Home Pos en DX100" width="360"> |
+| *Figura 3.1: Configuración `Home1` (`ORIGIN = CURRENT`) verificada en el Teach Pendant.* | *Figura 3.2: Configuración `Home2` (`SPECIFIED = CURRENT`, `DIFFERENCE = 0`) en el Teach Pendant.* |
 
 ---
 
 ## 4. Operación manual del manipulador Motoman MH6 (Teach Pendant DX100)
 
 ### 4.1 Encendido, modos de operación y seguridad básica
-- **Selector de modo (`[MODE]`):**
-  - **`TEACH`:** *[Completar: operación manual desde Teach Pendant]*
-  - **`PLAY`:** *[Completar: ejecución local de jobs en controlador]*
-  - **`REMOTE`:** *[Completar: requerido para comandar el robot desde PC/RoboDK]*
-- **Activación de servos:** Presionar levemente el **`Enable Switch`** (Deadman Switch de 3 posiciones ubicado en la parte posterior del Teach Pendant) hasta la posición intermedia y habilitar **`[SERVO ON READY]`**. *[Completar: explicar qué ocurre en las 3 posiciones del switch.]*
-- **Parada de emergencia (`Emergency Stop`):** *[Completar: ubicación y procedimiento de liberación/rearme.]*
+- **Selector de modo (`[MODE]`):** Llave selectora ubicada en la parte superior izquierda del Teach Pendant con tres posiciones:
+  - **`TEACH`:** Habilita la operación manual desde el Teach Pendant y la edición/enseñanza de puntos y programas.
+  - **`PLAY`:** Permite ejecutar de manera automática los programas (*jobs*) almacenados localmente en el controlador DX100.
+  - **`REMOTE`:** Cede el control a señales externas o a un computador en red; es el modo obligatorio para comandar el robot en tiempo real desde RoboDK.
+- **Activación de servos (`Enable Switch` y `[SERVO ON READY]`):** El *Enable Switch* (Deadman Switch) trasero del Teach Pendant cuenta con **3 posiciones de seguridad**:
+  1. *Suelto (sin presionar):* energía de servomotores desactivada (`OFF`).
+  2. *Presión ligera intermedia:* habilita los servomotores (`ON`) permitiendo mover el manipulador en modo `TEACH`.
+  3. *Presión firme a fondo (reacción ante pánico):* corta inmediatamente la potencia de los servos (`OFF`) para detener cualquier movimiento.
+  Para energizar el brazo manualmente se habilita **`[SERVO ON READY]`** y se sostiene el *Enable Switch* en la posición intermedia.
+- **Parada de emergencia (`Emergency Stop`):** Pulsador tipo hongo de color rojo ubicado en la esquina superior derecha del Teach Pendant (y en el gabinete del DX100). Al oprimirlo se interrumpe de inmediato la potencia a los servos y el indicador de estado muestra `Emergency Stop`. Para rearmar el sistema se debe girar el botón en el sentido de las flechas hasta liberarlo, limpiar alarmas si aplica y reenergizar los servos.
 
 ### 4.2 Cambio de coordenadas y movimiento manual (Articulaciones y Cartesiano)
 
@@ -117,53 +139,76 @@ Para conmutar el sistema de coordenadas manual en el DX100 se utiliza la tecla *
 
 | Teclas de eje (*Axis keys*) | Modo `Joint` (Articulaciones) | Modo `Cartesian` (Traslación / Rotación) |
 |:---:|:---:|:---:|
-| `X-` / `X+` (Básicos) | Eje `S` (Base) | *[Completar: traslación en X]* |
-| `Y-` / `Y+` (Básicos) | Eje `L` (Brazo inferior) | *[Completar: traslación en Y]* |
-| `Z-` / `Z+` (Básicos) | Eje `U` (Brazo superior) | *[Completar: traslación en Z]* |
-| `X-` / `X+` (Muñeca) | Eje `R` (Rotación muñeca) | *[Completar: rotación alrededor de X]* |
-| `Y-` / `Y+` (Muñeca) | Eje `B` (Flexión muñeca) | *[Completar: rotación alrededor de Y]* |
-| `Z-` / `Z+` (Muñeca) | Eje `T` (Giro flange) | *[Completar: rotación alrededor de Z]* |
+| `X-` / `X+` (Básicos) | Eje `S` (Base) | Traslación lineal del TCP sobre el eje `X` de la base |
+| `Y-` / `Y+` (Básicos) | Eje `L` (Brazo inferior) | Traslación lineal del TCP sobre el eje `Y` de la base |
+| `Z-` / `Z+` (Básicos) | Eje `U` (Brazo superior) | Traslación lineal del TCP sobre el eje `Z` de la base |
+| `X-` / `X+` (Muñeca) | Eje `R` (Rotación muñeca) | Rotación de la herramienta alrededor de `X` (`Rx`, TCP fijo) |
+| `Y-` / `Y+` (Muñeca) | Eje `B` (Flexión muñeca) | Rotación de la herramienta alrededor de `Y` (`Ry`, TCP fijo) |
+| `Z-` / `Z+` (Muñeca) | Eje `T` (Giro flange) | Rotación de la herramienta alrededor de `Z` (`Rz`, TCP fijo) |
 
-*[Completar: detallar el procedimiento paso a paso para pasar de modo articular a cartesiano y realizar traslaciones/rotaciones en X, Y, Z, adjuntando capturas o esquema de las teclas del Teach Pendant.]*
+> [!NOTE]
+> En la documentación del DX100, el modo `Cartesian` también se denomina **`RECTANGULAR`** o **`XYZ`**. En este modo, las teclas básicas trasladan el TCP manteniendo fija la orientación de la herramienta, mientras que las teclas de muñeca rotan la orientación (`Rx, Ry, Rz`) manteniendo fijo el punto TCP.
+
+**Procedimiento paso a paso en el Teach Pendant DX100:**
+1. Girar el selector `[MODE]` a **`TEACH`** para habilitar la operación manual.
+2. Mantener presionado el **`Enable Switch`** (Deadman Switch) en su posición intermedia y verificar la activación de servos (`[SERVO ON READY]`).
+3. Presionar la tecla **`[COORD]`** hasta visualizar en el *Status display area* (`B`) el modo **`Joint`** (ícono de brazo articulado, para mover `S, L, U, R, B, T` de forma independiente) o **`Cartesian`** (ícono de ejes con cuadrado amarillo, para trasladar en `X, Y, Z` con las teclas básicas y rotar en `Rx, Ry, Rz` con las teclas de muñeca).
+4. Seleccionar el nivel de velocidad manual (`FAST` / `SLOW`) y pulsar de forma sostenida la tecla de eje deseada sin soltar el `Enable Switch`.
+
+<div align="center">
+  <img src="./Resultados/teach_pendant_dx100.jpg" alt="Teach Pendant DX100 del Motoman MH6" width="340"><br>
+  <em>Figura 4.1: Teach Pendant DX100 en Sala CAM mostrando selector <code>[MODE]</code>, Emergency Stop, <code>[COORD]</code>, <code>[SERVO ON READY]</code>, teclas de velocidad y ejes.</em>
+</div><br>
 
 ### 4.3 Niveles de velocidad manual
 
 - **¿Cómo se hace el cambio entre niveles de velocidad?**  
-  Mediante las teclas **`MANUAL SPEED`** (**`FAST`** para aumentar y **`SLOW`** para disminuir el nivel). *[Completar: detallar cuándo conviene usar cada nivel.]*
+  Mediante las teclas **`MANUAL SPEED`** (**`FAST`** para incrementar y **`SLOW`** para disminuir el nivel). Se recomienda usar `High`/`Medium` en traslados amplios en zona despejada y cambiar a `Low`/`Inching` al acercarse al plano de trabajo o calibrar marcos.
 - **¿Cómo se identifica en pantalla el nivel establecido?**  
-  En el **área de estado (*Status display area*)** de la parte superior de la pantalla del DX100 (indicador `C. Manual speed`), se muestra el ícono correspondiente al nivel activo:
+  En el **área de estado (*Status display area*)** ubicada en la parte superior de la pantalla del DX100 (indicador `C. Manual speed`), aparece un ícono similar a barras de señal de datos compuesto por **tres barritas verticales progresivas en verde** junto a la letra correspondiente al nivel activo (`I`, `L`, `M` o `H`):
 
 | Nivel de velocidad | Ícono en pantalla (`C. Manual speed`) | Velocidad relativa / uso típico | Descripción |
 |---|:---:|---|---|
-| **`Inching`** | `I` | Ajuste fino paso a paso | *[Completar]* |
-| **`Low Speed`** | `L` | Aproximación segura a superficie | *[Completar]* |
-| **`Medium Speed`** | `M` | Desplazamientos intermedios | *[Completar]* |
-| **`High Speed`** | `H` | Traslados amplios sin riesgo de colisión | *[Completar]* |
+| **`Inching`** | `I` + 0 barritas verdes (3 vacías) | Ajuste fino paso a paso | Desplazamiento incremental mínimo para calibración y contacto preciso. |
+| **`Low Speed`** | `L` + 1 barrita verde | Aproximación segura a superficie | Movimiento lento y controlado cerca de la mesa o de obstáculos. |
+| **`Medium Speed`** | `M` + 2 barritas verdes | Desplazamientos intermedios | Velocidad moderada para reposicionamiento general dentro de la celda. |
+| **`High Speed`** | `H` + 3 barritas verdes | Traslados amplios en zona libre | Máxima velocidad manual; usar únicamente con trayectoria despejada. |
+
+<div align="center">
+  <img src="./Resultados/dx100_estado_velocidad.jpg" alt="Barra de estado del Teach Pendant DX100" width="380"><br>
+  <em>Figura 4.2: Barra de estado del Teach Pendant DX100 mostrando el modo de coordenadas <code>Joint</code> y el indicador de velocidad manual <code>M</code> con dos barritas verdes activas.</em>
+</div><br>
 
 ---
 
 ## 5. Software RoboDK, comunicación con el MH6 y comparación con RobotStudio
 
 ### 5.1 Funcionalidades principales de RoboDK y cómo mueve el manipulador
-*[Completar: describir las funcionalidades clave de RoboDK (modelado 3D multi-marca, calibración de herramientas y frames, detección de colisiones, simulación offline, generación de código y control online) y explicar qué realiza internamente para mover el manipulador (cálculo de cinemática inversa, interpolación de trayectorias `MoveJ`/`MoveL` y traducción mediante driver/postprocesador).]*
+**RoboDK** es un entorno multi-marca de simulación offline y programación de robots industriales. Entre sus funciones principales se encuentran el modelado 3D de celdas, la definición y calibración de sistemas de referencia (*Frames*) y herramientas (TCP), la detección de colisiones y singularidades, la generación de trayectorias desde scripts o CAD/CAM, la exportación de programas nativos mediante postprocesadores (por ejemplo `.jbi` en INFORM para Motoman) y el control en línea desde PC.
+
+**¿Qué hace RoboDK para mover el manipulador?**  
+A partir de los objetivos cartesianos o articulares definidos en el script (`MoveJ`, `MoveL`), RoboDK resuelve la **cinemática inversa** del modelo del Motoman MH6, verifica límites articulares y singularidades, interpola los puntos intermedios respetando los parámetros de velocidad (`setSpeed`) y suavizado (`setRounding`), y envía los comandos resultantes ya sea al gemelo virtual (simulación) o al driver de comunicación en tiempo real para ejecutarlos en el controlador físico.
 
 ### 5.2 Comunicación RoboDK ↔ Motoman MH6 (DX100)
-*[Completar: explicar la arquitectura física y lógica de comunicación entre el PC con RoboDK y el controlador DX100 (cableado/red Ethernet IP, selección de modo `REMOTE` en el Teach Pendant, driver de RoboDK para Motoman/Yaskawa, y cómo el bloque `robot.Connect()` / `robot.ConnectedState()` de `Lab02_Kennet_Ariel.py` establece y verifica el enlace en tiempo real).]*
+La comunicación entre el computador y el manipulador se realiza mediante enlace **Ethernet (TCP/UDP sobre IP)** conectando el PC al puerto LAN del controlador **DX100** dentro de la misma subred. Para permitir el comando externo en tiempo real:
+1. En el Teach Pendant del DX100 se posiciona el selector `[MODE]` en **`REMOTE`**.
+2. En RoboDK se configura la dirección IP del controlador y el driver de comunicación **High-Speed Ethernet Server (`MotomanHSE`)** para Yaskawa/Motoman.
+3. Desde [`Lab02_Kennet_Ariel.py`](./Python/Lab02_Kennet_Ariel.py) (líneas 16–24), la API establece y valida la sesión en línea mediante `robot.Connect()` y `robot.ConnectedState()`, enviando cada instrucción `MoveJ`/`MoveL` en tiempo real al manipulador físico.
 
 ### 5.3 Comparación entre RoboDK y RobotStudio
 
 | Criterio | RoboDK | RobotStudio |
 |---|---|---|
-| **Fabricantes y robots soportados** | *[Completar]* | *[Completar]* |
-| **Lenguaje / API de programación** | *[Completar]* | *[Completar]* |
-| **Fidelidad de simulación del controlador** | *[Completar]* | *[Completar]* |
-| **Control online desde PC** | *[Completar]* | *[Completar]* |
-| **Ventajas principales** | *[Completar]* | *[Completar]* |
-| **Limitaciones** | *[Completar]* | *[Completar]* |
-| **Aplicaciones recomendadas** | *[Completar]* | *[Completar]* |
+| **Fabricantes y robots soportados** | Multi-marca (Yaskawa/Motoman, ABB, KUKA, FANUC, UR, Epson, etc.) | Exclusivo para manipuladores **ABB** |
+| **Lenguaje / API de programación** | Python API (`robodk`), C#, C++, MATLAB y postprocesadores a lenguaje nativo | Lenguaje nativo **RAPID** y SDK de ABB |
+| **Fidelidad de simulación del controlador** | Cinemática y trayectorias aproximadas por driver/postprocesador (no emula el firmware real completo) | Controlador virtual **IRC5** idéntico al real (tiempos de ciclo, lógica E/S, interrupciones y señales exactas) |
+| **Control online desde PC** | Nativo (*Run on Robot* mediante drivers como `MotomanHSE`) | Enfoque principal de programación/despliegue offline y monitoreo en línea hacia IRC5 |
+| **Ventajas principales** | Versatilidad multi-marca, integración rápida con Python/CAD y curva de aprendizaje ágil | Precisión exacta de tiempos, dinámica, cinemática y configuración real de E/S en ABB |
+| **Limitaciones** | Menor fidelidad en lógicas de E/S complejas, variadores o retardos internos de cada controlador | Limitado al ecosistema ABB; requiere mayor configuración inicial del entorno del controlador |
+| **Aplicaciones recomendadas** | Prototipado rápido, trayectorias desde Python/CAD, celdas heterogéneas y docencia multi-robot | Celdas industriales ABB completas con E/S físicas, sincronización de periféricos y puesta en marcha en planta |
 
 ### 5.4 Significado y valoración de cada herramienta para el equipo
-*[Completar: responder qué representa cada herramienta (`RoboDK` vs. `RobotStudio`) para el equipo desde el punto de vista de aprendizaje, versatilidad industrial y flujo de trabajo.]*
+A partir de la experiencia acumulada entre el Laboratorio 1 y el Laboratorio 2, **RobotStudio** representa para el equipo el entorno especializado de ingeniería y puesta en marcha industrial para un fabricante específico (ABB), indispensable cuando se requiere exactitud en tiempos, configuración real de módulos de E/S digitales y validación fiel del controlador antes de ir a planta. Por su parte, **RoboDK** representa una plataforma ágil, abierta y multi-marca que facilita enormemente conectar la robótica con cálculo matemático y generación algorítmica de trayectorias en **Python**, acelerando la experimentación y el control directo desde PC sobre distintos manipuladores como el Motoman MH6.
 
 ---
 
@@ -213,22 +258,20 @@ $$x(\theta) = r(\theta)\cos(\theta), \qquad y(\theta) = r(\theta)\sin(\theta)$$
 El script vincula los elementos de la estación mediante los siguientes identificadores:
 - **Marco de referencia del plano de dibujo:** `frame_name = "Frame_from_Target1"` (`robot.setPoseFrame(frame)`).
 - **Pose segura inicial/final:** `target_home = "Target Home"` (`t_h`).
-- **Herramienta activa:** `robot.setPoseTool(robot.PoseTool())`.
+- **Herramienta activa:** No se diseñó ni acopló una herramienta externa; se utilizó directamente la **herramienta propia ya instalada en el manipulador** (`robot.setPoseTool(robot.PoseTool())`), manteniendo su TCP previamente definido en la estación.
 
-*[Completar: documentar cómo se definió y calibró `Frame_from_Target1` sobre la superficie de trabajo física en Sala CAM, qué herramienta/portamarcador se utilizó (incluyendo su TCP y masa real en RoboDK) e insertar captura de la estación en RoboDK.]*
+*[Completar: documentar cómo se definió y calibró `Frame_from_Target1` sobre la superficie de trabajo física en Sala CAM e insertar captura de la estación en RoboDK.]*
 
 ### 7.3 Trazado de los nombres de los integrantes (KENNET y ARIEL)
 
 Debajo de la trayectoria polar, el programa dibuja los nombres **KENNET** y **ARIEL** usando la lista `trazos_nombres` (línea 106), conformada por **13 contornos poligonales cerrados** (`6` trazos para **KENNET** y `7` trazos para **ARIEL**).
 
 - **Suavizado:** Se reduce a `robot.setRounding(2)` para mantener esquinas definidas en la tipografía.
-- **Transformación geométrica (`transformar_punto(px, py)`):**
+- **Origen de puntos y transformación geométrica (`transformar_punto(px, py)`):** Los contornos 2D de `trazos_nombres` se obtuvieron previamente mediante otro script auxiliar en Python. Como al proyectarlos sobre `Frame_from_Target1` los nombres aparecieron volteados respecto a la figura polar, se aplicó la siguiente transformación en tres pasos:
   1. Corrección de espejo en $Y$ y centrado local: $x_{\text{temp}} = p_x + 30$, $y_{\text{temp}} = -p_y - 340$.
   2. Rotación de $\text{ANGULO} = 90^\circ$ ($\pi/2\text{ rad}$): $x_{\text{rot}} = x_{\text{temp}}\cos\alpha - y_{\text{temp}}\sin\alpha$, $y_{\text{rot}} = x_{\text{temp}}\sin\alpha + y_{\text{temp}}\cos\alpha$.
   3. Traslación final bajo la figura polar: `POS_X = -90`, `POS_Y = -40`.
 - **Estrategia de movimiento:** Para cada trazo, el robot se aproxima por encima (`z_surface - z_safe = -50`), desciende a `z_surface = 0`, recorre todos los vértices con `MoveL` y se eleva nuevamente al concluir el contorno antes de pasar al siguiente.
-
-*[Completar: explicar brevemente cómo se vectorizaron las letras de `trazos_nombres` y por qué fue necesario ajustar orientación (`ANGULO = 90°`) y desplazamiento (`POS_X`, `POS_Y`).]*
 
 ### 7.4 Diagrama de flujo de acciones del robot
 
@@ -269,6 +312,75 @@ El código fuente completo se adjunta como anexo en [`Lab02_Kennet_Ariel.py`](./
 | **5. Ejecución de trayectoria polar** | `73–99` | Calcula $r(\theta)$, $(x, y)$ en $\theta \in [0, \pi]$ y ejecuta la curva con `MoveL`, finalizando con retracción segura. |
 | **6. Trazado de nombres y retorno a Home** | `102–153` | Ajusta `setRounding(2)`, transforma los 13 trazos de `KENNET` y `ARIEL`, los dibuja con `MoveL` y regresa a `Target Home` con `MoveJ`. |
 
+**Extracto principal de control y generación de trayectorias (`Python/Lab02_Kennet_Ariel.py`):**
+
+```python
+from robodk.robolink import *
+from robodk.robomath import *
+import math
+
+RDK = Robolink()
+robot = RDK.ItemUserPick("Selecciona un robot", ITEM_TYPE_ROBOT)
+# robot.Connect()  # Descomentado durante la ejecución física en modo REMOTE
+
+frame = RDK.Item("Frame_from_Target1", ITEM_TYPE_FRAME)
+t_h = RDK.Item("Target Home", ITEM_TYPE_TARGET)
+robot.setPoseFrame(frame)
+robot.setPoseTool(robot.PoseTool())
+robot.setSpeed(300)
+robot.setRounding(5)
+
+num_points = 220
+A = 250
+k = 5
+z_surface = 0
+z_safe = 50
+
+robot.MoveJ(t_h)
+robot.MoveJ(transl(0, 0, z_surface - z_safe))
+robot.MoveL(transl(0, 0, z_surface))
+
+full_turn = math.pi
+for i in range(num_points + 1):
+    t = i / num_points
+    theta = full_turn * t
+    r = A * math.sin(k * theta) * math.sin(k * theta) * math.cos(theta)
+    x = r * math.cos(theta)
+    y = r * math.sin(theta)
+    robot.MoveL(transl(x, y, z_surface))
+
+robot.MoveL(transl(x, y, z_surface - z_safe))
+
+robot.setRounding(2)
+# trazos_nombres = [...]  # 13 contornos cerrados para KENNET y ARIEL
+POS_X = -90
+POS_Y = -40
+ANGULO = math.radians(90)
+cos_a = math.cos(ANGULO)
+sin_a = math.sin(ANGULO)
+
+def transformar_punto(px, py):
+    x_temp = px + 30
+    y_temp = -py - 340
+    x_rot = x_temp * cos_a - y_temp * sin_a
+    y_rot = x_temp * sin_a + y_temp * cos_a
+    return x_rot + POS_X, y_rot + POS_Y
+
+for trazo in trazos_nombres:
+    if len(trazo) == 0:
+        continue
+    x0, y0 = transformar_punto(trazo[0][0], trazo[0][1])
+    robot.MoveL(transl(x0, y0, z_surface - z_safe))
+    for px, py in trazo:
+        nx, ny = transformar_punto(px, py)
+        robot.MoveL(transl(nx, ny, z_surface))
+    xf, yf = transformar_punto(trazo[-1][0], trazo[-1][1])
+    robot.MoveL(transl(xf, yf, z_surface - z_safe))
+
+robot.setRounding(5)
+robot.MoveJ(t_h)
+```
+
 ---
 
 ## 8. Resultados, evidencias y video demostrativo
@@ -282,10 +394,12 @@ El código fuente completo se adjunta como anexo en [`Lab02_Kennet_Ariel.py`](./
 
 | Montaje físico en Sala CAM | Resultado final sobre el plano de trabajo |
 |:---:|:---:|
-| *[Completar: insertar foto del Motoman MH6 en Sala CAM]* | *[Completar: insertar foto del trazado final (figura polar + KENNET y ARIEL)]* |
-| *Figura 8.3: Ejecución física comandada desde PC en tiempo real.* | *Figura 8.4: Trazado final obtenido sobre la superficie de trabajo.* |
+| <img src="./Resultados/pendant_celda_mh6.jpg" alt="Teach Pendant DX100 montado en la celda del Motoman MH6" width="360"> | *[Completar: insertar foto del trazado final (figura polar + KENNET y ARIEL)]* |
+| *Figura 8.3: Teach Pendant DX100 acoplado en la celda del Motoman MH6 en Sala CAM.* | *Figura 8.4: Trazado final obtenido sobre la superficie de trabajo.* |
 
 ### 8.2 Video demostrativo (YouTube — Canal oficial LabSIR)
+
+A continuación se presenta el registro audiovisual de la simulación en RoboDK y la ejecución física en el robot real (incluyendo la introducción oficial del Laboratorio LabSIR):
 
 - **Título:** `Laboratorio 02: Simulación y Operación del Manipulador Motoman MH6 | Equipo 5B | 2026-II`
 - **Contenido abarcado:**
@@ -293,26 +407,43 @@ El código fuente completo se adjunta como anexo en [`Lab02_Kennet_Ariel.py`](./
   - Configuración del sistema de referencia (Frame), herramienta y simulación de trayectoria en RoboDK.
   - Ejecución física en tiempo real de la trayectoria polar sobre el plano de trabajo.
   - Trazado de los nombres de los integrantes (**KENNET** y **ARIEL**) mediante líneas e interpolaciones.
-- **Enlace al video (con introducción oficial de LabSIR):** *[Completar: insertar enlace e imagen/miniatura de YouTube una vez publicado en el canal oficial de LabSIR]*
+
+<div align="center">
+
+*[Completar: insertar miniatura y enlace al video una vez publicado en el canal oficial de YouTube del Laboratorio LabSIR]*
+
+</div>
 
 ---
 
 ## 9. Aprendizajes, dificultades y conclusiones
 
 ### Aprendizajes clave
-- *[Completar: aprendizajes sobre operación del Teach Pendant DX100, calibración en RoboDK y control online desde Python.]*
+- **Control online multi-marca con RoboDK y Python API:** Comprensión práctica de cómo traducir ecuaciones paramétricas polares y contornos vectoriales a instrucciones `MoveJ`/`MoveL` ejecutadas directamente sobre el manipulador físico mediante enlace Ethernet en modo `REMOTE`.
+- **Operación manual en Teach Pendant DX100:** Manejo de seguridad básica (`Enable Switch` de 3 posiciones, `Emergency Stop`), conmutación de sistemas de coordenadas con `[COORD]`, ajuste de velocidad manual (`FAST`/`SLOW`) e interpretación de las posturas de referencia `Home1` y `Home2`.
+- **Validación previa de trayectorias:** Verificación matemática en **GeoGebra** y cinemática en **RoboDK** antes de energizar y comandar el brazo en tiempo real sobre la superficie de trabajo.
 
-### Dificultades encontradas y soluciones
-- *[Completar: dificultades con el enfoque de marco `Frame_from_Target1`, orientación/espejo de los nombres, ajuste de `setRounding`, conexión remota en DX100, etc.]*
+### Dificultades encontradas y soluciones implementadas
+- **Orientación volteada de los nombres respecto a la figura polar:**
+  - *Dificultad:* Al generar los contornos 2D de `KENNET` y `ARIEL` desde un script auxiliar de Python y proyectarlos sobre `Frame_from_Target1`, el texto aparecía invertido/volteado frente al sistema de coordenadas de la curva polar.
+  - *Solución:* Se implementó la función `transformar_punto(px, py)` aplicando corrección de espejo en $Y$, rotación de `ANGULO = 90°` y traslación (`POS_X = -90`, `POS_Y = -40`) para alinear el texto debajo de la figura.
+- **Compromiso entre fluidez de curva y nitidez tipográfica:**
+  - *Dificultad:* Un radio de suavizado amplio (`setRounding(5)`) favorece la continuidad de la trayectoria polar, pero redondea excesivamente las esquinas agudas en las letras.
+  - *Solución:* Se mantuvo `robot.setRounding(5)` para la trayectoria polar y se redujo dinámicamente a `robot.setRounding(2)` antes de ejecutar `trazos_nombres`, restaurándolo a `5` al retornar a `Target Home`.
+- **Coherencia entre validación en GeoGebra, comentarios y ecuación implementada:**
+  - *Dificultad:* Al ajustar la ecuación polar final en el script (`A * sin^2(k*theta) * cos(theta)` en `[0, pi]`), los comentarios iniciales heredados en el código describían otra expresión (`A * sin(k*theta)` en `[0, 2*pi]`).
+  - *Solución:* Se unificaron los comentarios de `Lab02_Kennet_Ariel.py`, la formulación del informe y la validación matemática en GeoGebra sobre la misma ecuación ejecutada.
 
 ### Conclusiones
-- *[Completar: 2–3 conclusiones técnicas que respondan a los objetivos del laboratorio.]*
+- El **Yaskawa Motoman MH6** (`1422 mm` de alcance, `±0.08 mm` de repetibilidad) resulta más versátil que el **ABB IRB 140** (`810 mm`, `0.03 mm`) en celdas amplias donde prima la envolvente sobre el posicionamiento sub-décima de milímetro.
+- En el controlador **DX100**, **`Home2` (*Second Home*)** es la postura más conveniente para iniciar y cerrar rutinas por su configuración en L invertida orientada hacia el plano de trabajo, mientras que **`Home1` (*Work Home*)** cumple mejor el rol de parqueo compacto y seguro.
+- La integración **GeoGebra + RoboDK Python API** agiliza significativamente el desarrollo de trayectorias analíticas frente a la programación manual punto a punto, manteniendo la seguridad operacional mediante verificación previa en simulación.
 
 ---
 
 ## 10. Referencias
 - Universidad Nacional de Colombia — Curso de Robótica (2026). *Guía Laboratorio No. 02 — Robótica Industrial: Análisis y Operación del Manipulador Motoman MH6*.
 - Ramírez, R. E., & Cárdenas, P. F. *Programación y Operación Básica — Teach Pendant DX100, Manipulador Motoman MH6*. Departamento de Ingeniería Mecánica y Mecatrónica, Universidad Nacional de Colombia.
-- Yaskawa Motoman. *Manual / Hoja de datos del manipulador Motoman MH6 y controlador DX100*. *[Completar referencia exacta utilizada]*
-- ABB Robotics. *Hoja de datos del manipulador industrial ABB IRB 140*. *[Completar referencia exacta utilizada]*
+- Yaskawa Motoman. *Referencia básica de programación y operación — Controlador DX100 / Manipulador Motoman MH6* (manual técnico de referencia).
+- ABB Robotics (2020). *Product specification — IRB 140-6/0.8 / IRB 140T-6/0.8* (Document ID: 3HAC041346-001, Rev. Q).
 - RoboDK Inc. *RoboDK Python API Documentation (`robodk.robolink`, `robodk.robomath`)*.
