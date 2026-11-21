@@ -314,7 +314,7 @@ t_h = RDK.Item("Target Home", ITEM_TYPE_TARGET)
 robot.setPoseFrame(frame)
 robot.setPoseTool(robot.PoseTool())
 robot.setSpeed(300)
-robot.setRounding(5)
+robot.setRounding(3)
 
 num_points = 220
 A = 250
@@ -385,9 +385,9 @@ A continuación se presenta el registro audiovisual de la simulación en RoboDK 
 - **Título:** `Laboratorio 02: Simulación y Operación del Manipulador Motoman MH6 | Equipo 5B | 2026-II`
 - **Contenido abarcado:**
   - Validación matemática de la trayectoria polar en GeoGebra.
-  - Configuración del sistema de referencia (Frame), herramienta y simulación de trayectoria en RoboDK.
+  - Ejecución del script y vista simulación de trayectoria en RoboDK.
   - Ejecución física en tiempo real de la trayectoria polar sobre el plano de trabajo.
-  - Trazado de los nombres de los integrantes (**KENNET** y **ARIEL**) mediante líneas e interpolaciones.
+  - Trazado de los nombres de los integrantes (**KENNET** y **ARIEL**).
 
 <div align="center">
 
@@ -422,7 +422,7 @@ A continuación se presenta el registro audiovisual de la simulación en RoboDK 
 
 ---
 
-## 9. Referencias
+## Referencias
 - Universidad Nacional de Colombia — Curso de Robótica (2026). *Guía Laboratorio No. 02 — Robótica Industrial: Análisis y Operación del Manipulador Motoman MH6*.
 - Ramírez, R. E., & Cárdenas, P. F. *Programación y Operación Básica — Teach Pendant DX100, Manipulador Motoman MH6*. Departamento de Ingeniería Mecánica y Mecatrónica, Universidad Nacional de Colombia.
 - Yaskawa Motoman. *Referencia básica de programación y operación — Controlador DX100 / Manipulador Motoman MH6* (manual técnico de referencia).
