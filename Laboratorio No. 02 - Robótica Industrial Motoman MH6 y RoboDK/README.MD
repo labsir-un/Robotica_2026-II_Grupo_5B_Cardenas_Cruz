@@ -381,7 +381,7 @@ robot.MoveJ(t_h)
 
 ### 7.2 Video demostrativo (YouTube — Canal oficial LabSIR)
 
-A continuación se presenta el registro audiovisual de la simulación en RoboDK y la ejecución física en el robot real (incluyendo la introducción oficial del Laboratorio LabSIR):
+A continuación se presenta el registro audiovisual de la simulación en RoboDK y la ejecución física de la rutina en el manipulador.
 
 - **Título:** `Laboratorio 02: Simulación y Operación del Manipulador Motoman MH6 | Equipo 5B | 2026-II`
 - **Contenido abarcado:**
@@ -395,7 +395,7 @@ A continuación se presenta el registro audiovisual de la simulación en RoboDK 
 [![Video Demostrativo Lab 2 - Motoman MH6 UNAL](https://img.youtube.com/vi/m2J7S0i4Yzc/maxresdefault.jpg)](https://www.youtube.com/watch?v=m2J7S0i4Yzc)
 
 *Haz clic en la imagen superior para reproducir el video en YouTube*  
-**Enlace directo:** [https://www.youtube.com/watch?v=m2J7S0i4Yzc](https://www.youtube.com/watch?v=m2J7S0i4Yzc)
+**Enlace:** [https://www.youtube.com/watch?v=m2J7S0i4Yzc](https://www.youtube.com/watch?v=m2J7S0i4Yzc)
 
 </div>
 
