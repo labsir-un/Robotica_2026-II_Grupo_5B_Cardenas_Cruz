@@ -26,7 +26,7 @@
 6. [Trayectoria polar, nombres y programación en Python](#6-trayectoria-polar-nombres-y-programación-en-python)
 7. [Resultados, evidencias y video demostrativo](#7-resultados-evidencias-y-video-demostrativo)
 8. [Aprendizajes, dificultades y conclusiones](#8-aprendizajes-dificultades-y-conclusiones)
-9. [Referencias](#9-referencias)
+9. [Referencias](#-referencias)
 
 ---
 
@@ -48,10 +48,11 @@ El desarrollo integra tres ejes complementarios: la operación manual desde el *
 
 ```text
 Laboratorio No. 02 - Robótica Industrial Motoman MH6 y RoboDK/
-├── README.MD                 # Informe y documentación principal de la práctica
-├── Python/                   # Scripts de control en Python (RoboDK API)
-│   └── Lab02_Kennet_Ariel.py # Trayectoria polar y trazado de nombres
-└── Resultados/               # Evidencias del Teach Pendant DX100, celda, GeoGebra y RoboDK
+├── README.MD                           # Informe y documentación principal de la práctica
+├── Laboratorio_02_Eq5B_Ariel_Kennet    # Archivo de RoboDK
+├── Python/                             # Scripts de control en Python (RoboDK API)
+│   └── Lab02_Kennet_Ariel.py           # Trayectoria polar y trazado de nombres
+└── Resultados/                         # Evidencias del Teach Pendant DX100, celda, GeoGebra y RoboDK
     ├── home1_work_home_dx100.jpg
     ├── home2_second_home_dx100.jpg
     ├── teach_pendant_dx100.jpg
