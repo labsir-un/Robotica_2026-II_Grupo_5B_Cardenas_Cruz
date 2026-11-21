@@ -113,7 +113,9 @@ ANGULO = math.radians(90)
 cos_a = math.cos(ANGULO)
 sin_a = math.sin(ANGULO)
 
+# Transformaciones para ubicar bien los nombres
 def transformar_punto(px, py):
+    
     # 1. Quitar el efecto espejo de Y y centrar cerca del origen
     x_temp = px + 30
     y_temp = -py - 340
@@ -122,7 +124,7 @@ def transformar_punto(px, py):
     x_rot = x_temp * cos_a - y_temp * sin_a
     y_rot = x_temp * sin_a + y_temp * cos_a
     
-    # 3. Mover a la posición final debajo de la flor
+    # 3. Mover a la posición final debajo de la figura
     return x_rot + POS_X, y_rot + POS_Y
 
 for trazo in trazos_nombres:
@@ -131,7 +133,7 @@ for trazo in trazos_nombres:
         
     x0, y0 = transformar_punto(trazo[0][0], trazo[0][1])
     
-    # 1. Ir al inicio del trazo por arriba (altura segura)
+    # 1. Ir al inicio del trazo por arriba 
     robot.MoveL(transl(x0, y0, z_surface - z_safe))
     
     # 2. Bajar y recorrer todos los puntos del trazo
