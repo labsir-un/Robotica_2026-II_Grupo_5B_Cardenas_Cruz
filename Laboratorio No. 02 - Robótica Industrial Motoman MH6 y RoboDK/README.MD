@@ -391,7 +391,10 @@ A continuación se presenta el registro audiovisual de la simulación en RoboDK 
 
 <div align="center">
 
-*[Completar: insertar miniatura y enlace al video una vez publicado en el canal oficial de YouTube del Laboratorio LabSIR]*
+[![Video Demostrativo Lab 2 - Motoman MH6 UNAL](https://img.youtube.com/vi/m2J7S0i4Yzc/maxresdefault.jpg)](https://www.youtube.com/watch?v=m2J7S0i4Yzc)
+
+*Haz clic en la imagen superior para reproducir el video en YouTube*  
+**Enlace directo:** [https://www.youtube.com/watch?v=m2J7S0i4Yzc](https://www.youtube.com/watch?v=m2J7S0i4Yzc)
 
 </div>
 
